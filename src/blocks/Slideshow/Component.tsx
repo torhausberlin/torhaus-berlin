@@ -11,15 +11,21 @@ import React, { useCallback, useEffect, useState } from 'react'
 type Props = SlideshowBlockProps & {
   disableInnerContainer?: boolean
   id?: string
-  /** When true, omit the outer `container` wrapper (e.g. inside a column). */
+  /** When true, fill the parent (e.g. two-column); sharp edges, object-cover. */
   unboxed?: boolean
 }
 
-export const SlideshowBlock: React.FC<Props> = ({ gallery, id, unboxed }) => {
+export const SlideshowBlock: React.FC<Props> = ({
+  disableInnerContainer,
+  gallery,
+  id,
+  unboxed,
+}) => {
   const slides =
     gallery
       ?.map((row) => row.image)
-      .filter((img): img is NonNullable<typeof img> => Boolean(img && typeof img === 'object')) ?? []
+      .filter((img): img is NonNullable<typeof img> => Boolean(img && typeof img === 'object')) ??
+    []
 
   const [index, setIndex] = useState(0)
 
@@ -42,21 +48,27 @@ export const SlideshowBlock: React.FC<Props> = ({ gallery, id, unboxed }) => {
   const current = slides[index]
 
   const inner = (
-    <div className="relative overflow-hidden rounded-[0.8rem] border border-border bg-muted/30 aspect-[16/9] md:aspect-[21/9]">
+    <div
+      className={cn(
+        'relative w-full min-h-0 overflow-hidden bg-black',
+        unboxed ? 'flex-1' : 'aspect-video md:aspect-21/9',
+      )}
+    >
       <Media
-        className="relative block h-full w-full"
+        className="absolute inset-0 block h-full w-full"
         fill
-        imgClassName="object-contain"
+        imgClassName="object-cover"
         priority={index === 0}
         resource={current}
+        size="100vw"
       />
 
       {count > 1 && (
         <>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/50 to-transparent" />
           <Button
             aria-label="Previous slide"
-            className="absolute left-2 top-1/2 z-10 size-10 -translate-y-1/2 rounded-full border border-white/20 bg-black/40 text-white shadow-md backdrop-blur-sm hover:bg-black/60"
+            className="absolute left-2 top-1/2 z-10 size-10 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
             onClick={() => go(-1)}
             size="icon"
             type="button"
@@ -66,7 +78,7 @@ export const SlideshowBlock: React.FC<Props> = ({ gallery, id, unboxed }) => {
           </Button>
           <Button
             aria-label="Next slide"
-            className="absolute right-2 top-1/2 z-10 size-10 -translate-y-1/2 rounded-full border border-white/20 bg-black/40 text-white shadow-md backdrop-blur-sm hover:bg-black/60"
+            className="absolute right-2 top-1/2 z-10 size-10 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
             onClick={() => go(1)}
             size="icon"
             type="button"
@@ -83,7 +95,7 @@ export const SlideshowBlock: React.FC<Props> = ({ gallery, id, unboxed }) => {
                 aria-current={i === index ? 'true' : undefined}
                 aria-label={`Go to slide ${i + 1}`}
                 className={cn(
-                  'size-2 rounded-full transition-colors',
+                  'size-2 border border-white transition-colors',
                   i === index ? 'bg-white' : 'bg-white/40 hover:bg-white/70',
                 )}
                 key={i}
@@ -98,11 +110,14 @@ export const SlideshowBlock: React.FC<Props> = ({ gallery, id, unboxed }) => {
   )
 
   if (unboxed) {
-    return inner
+    return <div className="flex min-h-0 w-full flex-1 flex-col">{inner}</div>
   }
 
   return (
-    <div className="container" id={id ? `block-${id}` : undefined}>
+    <div
+      className={cn('w-full', !disableInnerContainer && 'container')}
+      id={id ? `block-${id}` : undefined}
+    >
       {inner}
     </div>
   )

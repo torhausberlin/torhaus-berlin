@@ -37,9 +37,9 @@ export default async function LocaleLayout({ children, params }: Props) {
           preview,
         }}
       /> */}
-      <Header />
+      <Header locale={locale} />
       {children}
-      <Footer />
+      <Footer locale={locale} />
     </NextIntlClientProvider>
   )
 }

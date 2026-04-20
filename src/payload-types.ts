@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    projects: Project;
     media: Media;
     categories: Category;
     users: User;
@@ -90,6 +91,7 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -167,6 +169,7 @@ export interface Page {
     | SlideshowBlock
     | TextBlock
     | SectionHeadingBlock
+    | ProjectsListingBlock
     | TwoColumnBlock
   )[];
   meta?: {
@@ -510,6 +513,10 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: string | Media;
+  /**
+   * Use 0 for auto / fill-height (e.g. inside two-column layouts).
+   */
+  viewportHeightPercent?: number | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -836,6 +843,50 @@ export interface SectionHeadingBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsListingBlock".
+ */
+export interface ProjectsListingBlock {
+  populateBy?: ('collection' | 'selection') | null;
+  limit?: number | null;
+  selectedDocs?: (string | Project)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectsListing';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  title: string;
+  image: string | Media;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Year for display and filters.
+   */
+  year: number;
+  participants?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TwoColumnBlock".
  */
 export interface TwoColumnBlock {
@@ -1066,6 +1117,10 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'projects';
+        value: string | Project;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -1154,6 +1209,7 @@ export interface PagesSelect<T extends boolean = true> {
         slideshow?: T | SlideshowBlockSelect<T>;
         text?: T | TextBlockSelect<T>;
         sectionHeading?: T | SectionHeadingBlockSelect<T>;
+        projectsListing?: T | ProjectsListingBlockSelect<T>;
         twoColumn?: T | TwoColumnBlockSelect<T>;
       };
   meta?:
@@ -1226,6 +1282,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  viewportHeightPercent?: T;
   id?: T;
   blockName?: T;
 }
@@ -1304,6 +1361,17 @@ export interface TextBlockSelect<T extends boolean = true> {
 export interface SectionHeadingBlockSelect<T extends boolean = true> {
   heading?: T;
   level?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectsListingBlock_select".
+ */
+export interface ProjectsListingBlockSelect<T extends boolean = true> {
+  populateBy?: T;
+  limit?: T;
+  selectedDocs?: T;
   id?: T;
   blockName?: T;
 }
@@ -1394,6 +1462,20 @@ export interface PostsSelect<T extends boolean = true> {
       };
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  image?: T;
+  description?: T;
+  year?: T;
+  participants?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

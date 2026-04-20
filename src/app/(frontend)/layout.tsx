@@ -5,7 +5,6 @@ import { cn } from '@/utilities/ui'
 import React from 'react'
 
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
 import './globals.css'
@@ -20,12 +19,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <head>
-        <InitTheme lightOnly />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
-        <Providers lightOnly>{children}</Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

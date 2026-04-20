@@ -12,7 +12,7 @@ export const TextBlock: React.FC<Props> = ({ content }) => {
   if (!content) return null
 
   return (
-    <div className="container max-w-[48rem]">
+    <div className="container max-w-3xl sectionPy">
       <RichText className="mb-0" data={content} enableGutter={false} />
     </div>
   )

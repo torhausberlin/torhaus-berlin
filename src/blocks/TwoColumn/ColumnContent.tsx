@@ -10,6 +10,7 @@ import type {
 import RichText from '@/components/RichText'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { SlideshowBlock } from '@/blocks/Slideshow/Component'
+import { cn } from '@/utilities/ui'
 
 type ColumnBlock = NonNullable<TwoColumnBlock['leftColumn']>[number]
 
@@ -34,18 +35,25 @@ export const TwoColumnCell: React.FC<{
     return null
   }
 
-  if (isColumnText(block)) {
-    if (!block.content) return null
-    return <RichText className="mb-0" data={block.content} enableGutter={false} />
-  }
+  const growMedia =
+    block.blockType === 'columnSlideshow' || block.blockType === 'columnMedia'
 
-  if (isColumnSlideshow(block)) {
-    return <SlideshowBlock blockType="slideshow" gallery={block.gallery} unboxed />
-  }
+  const inner =
+    isColumnText(block) && block.content ? (
+      <RichText className="mb-0" data={block.content} enableGutter={false} />
+    ) : isColumnSlideshow(block) ? (
+      <SlideshowBlock blockType="slideshow" gallery={block.gallery} unboxed />
+    ) : isColumnMedia(block) ? (
+      <MediaBlock
+        blockType="mediaBlock"
+        disableInnerContainer
+        enableGutter={false}
+        fillHeight
+        media={block.media}
+      />
+    ) : null
 
-  if (isColumnMedia(block)) {
-    return <MediaBlock blockType="mediaBlock" enableGutter={false} media={block.media} />
-  }
+  if (!inner) return null
 
-  return null
+  return <div className={cn('min-w-0', growMedia && 'flex min-h-0 flex-1 flex-col')}>{inner}</div>
 }

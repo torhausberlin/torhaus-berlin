@@ -26,6 +26,8 @@ import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } f
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
 import { ExternalLinkRowLabel as ExternalLinkRowLabel_1c9a527c99b3fa71c2042e94b50a0b59 } from '@/Header/ExternalLinkRowLabel'
 import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
+import { AdminNavLogo as AdminNavLogo_980e5d68a4f173ac85807991e8cb2ba1 } from '@/components/AdminBrandIcon'
+import { AdminNavLogo as AdminNavLogo_cf1576879fb1b15ea78aaa30a02d5e79 } from '@/components/AdminBrandLogo'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -58,5 +60,7 @@ export const importMap = {
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
   "@/Header/ExternalLinkRowLabel#ExternalLinkRowLabel": ExternalLinkRowLabel_1c9a527c99b3fa71c2042e94b50a0b59,
   "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466,
+  "@/components/AdminBrandIcon#AdminNavLogo": AdminNavLogo_980e5d68a4f173ac85807991e8cb2ba1,
+  "@/components/AdminBrandLogo#AdminNavLogo": AdminNavLogo_cf1576879fb1b15ea78aaa30a02d5e79,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

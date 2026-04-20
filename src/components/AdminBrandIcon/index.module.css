@@ -1,0 +1,19 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.image {
+  display: block;
+  height: auto;
+  width: auto;
+  max-height: 2rem;
+  max-width: 2rem;
+  object-fit: contain;
+}
+
+:global(html[data-theme='dark']) .image {
+  filter: invert(1);
+}

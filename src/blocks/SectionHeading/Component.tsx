@@ -5,9 +5,9 @@ import { cn } from '@/utilities/ui'
 import type { SectionHeadingBlock as SectionHeadingBlockProps } from '@/payload-types'
 
 const levelClass: Record<'h2' | 'h3' | 'h4', string> = {
-  h2: 'text-3xl md:text-4xl font-semibold tracking-tight',
-  h3: 'text-2xl md:text-3xl font-semibold tracking-tight',
-  h4: 'text-xl md:text-2xl font-semibold tracking-tight',
+  h2: 'text-3xl md:text-4xl font-semibold',
+  h3: 'text-2xl md:text-3xl font-semibold',
+  h4: 'text-xl md:text-2xl font-semibold',
 }
 
 type Props = SectionHeadingBlockProps & {
@@ -33,5 +33,5 @@ export const SectionHeadingBlock: React.FC<Props> = ({ heading, level, unboxed }
     return headingEl
   }
 
-  return <div className="container">{headingEl}</div>
+  return <div className="container py-3 lg:py-6 text-center tracking-widest">{headingEl}</div>
 }

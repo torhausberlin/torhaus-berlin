@@ -9,6 +9,7 @@ import { Code } from '../../blocks/Code/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { ProjectsListing } from '../../blocks/ProjectsListing/config'
 import { SectionHeading } from '../../blocks/SectionHeading/config'
 import { Slideshow } from '../../blocks/Slideshow/config'
 import { Text } from '../../blocks/Text/config'
@@ -85,6 +86,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Slideshow,
                 Text,
                 SectionHeading,
+                ProjectsListing,
                 TwoColumn,
               ],
               required: true,

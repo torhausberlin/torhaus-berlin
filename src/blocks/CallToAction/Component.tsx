@@ -7,8 +7,8 @@ import { CMSLink } from '@/components/Link'
 
 export const CallToActionBlock: React.FC<CTABlockProps> = ({ links, richText }) => {
   return (
-    <div className="container">
-      <div className="bg-card rounded border-border border p-4 flex flex-col gap-8 md:flex-row md:justify-between md:items-center">
+    <div className="w-full">
+      <div className="flex flex-col gap-8 border-2 border-black bg-card p-6 md:flex-row md:items-center md:justify-between md:p-10">
         <div className="max-w-[48rem] flex items-center">
           {richText && <RichText className="mb-0" data={richText} enableGutter={false} />}
         </div>

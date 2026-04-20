@@ -21,7 +21,30 @@ type CMSLinkType = {
   url?: string | null
 }
 
-function isExternalHref(href: string) {
+/** Locale-agnostic path for next-intl `Link` / active-state checks. */
+export function resolveCMSLinkHref({
+  type,
+  reference,
+  url,
+}: Pick<CMSLinkType, 'type' | 'reference' | 'url'>): string | null {
+  if (
+    type === 'reference' &&
+    reference?.value &&
+    typeof reference.value === 'object' &&
+    'slug' in reference.value &&
+    reference.value.slug
+  ) {
+    const slug = reference.value.slug
+    if (reference.relationTo === 'pages') {
+      return slug === 'home' ? '/' : `/${slug}`
+    }
+    return `/${reference.relationTo}/${slug}`
+  }
+  const trimmed = url?.trim()
+  return trimmed || null
+}
+
+export function isExternalNavigationHref(href: string) {
   return (
     /^https?:\/\//.test(href) ||
     /^mailto:/i.test(href) ||
@@ -43,17 +66,12 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     url,
   } = props
 
-  const href =
-    type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
-          reference.value.slug
-        }`
-      : url
+  const href = resolveCMSLinkHref({ type, reference, url })
 
   if (!href) return null
 
-  const targetHref = href || url || ''
-  const NavLink = isExternalHref(targetHref) ? NextLink : Link
+  const targetHref = href
+  const NavLink = isExternalNavigationHref(targetHref) ? NextLink : Link
 
   const size = appearance === 'link' ? 'clear' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}

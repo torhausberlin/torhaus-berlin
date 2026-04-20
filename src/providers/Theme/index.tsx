@@ -1,76 +1,36 @@
 'use client'
 
-import React, { createContext, useCallback, use, useEffect, useState } from 'react'
+import React, { createContext, use, useCallback, useEffect, useState } from 'react'
 
 import type { Theme, ThemeContextType } from './types'
 
-import canUseDOM from '@/utilities/canUseDOM'
-import { defaultTheme, getImplicitPreference, themeLocalStorageKey } from './shared'
-import { themeIsValid } from './types'
+import { themeLocalStorageKey } from './shared'
 
 const initialContext: ThemeContextType = {
   setTheme: () => null,
-  theme: undefined,
+  theme: 'light',
 }
 
 const ThemeContext = createContext(initialContext)
 
-export const ThemeProvider = ({
-  children,
-  lightOnly = false,
-}: {
-  children: React.ReactNode
-  lightOnly?: boolean
-}) => {
-  const [theme, setThemeState] = useState<Theme | undefined>(
-    canUseDOM ? (document.documentElement.getAttribute('data-theme') as Theme) : undefined,
-  )
+/** Frontend is light-only: `data-theme` stays `light`, legacy theme key cleared from storage. */
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const [theme, setThemeState] = useState<Theme>('light')
 
-  const setTheme = useCallback(
-    (themeToSet: Theme | null) => {
-      if (lightOnly) {
-        document.documentElement.setAttribute('data-theme', 'light')
-        setThemeState('light')
-        return
-      }
-      if (themeToSet === null) {
-        window.localStorage.removeItem(themeLocalStorageKey)
-        const implicitPreference = getImplicitPreference()
-        document.documentElement.setAttribute('data-theme', implicitPreference || '')
-        if (implicitPreference) setThemeState(implicitPreference)
-      } else {
-        setThemeState(themeToSet)
-        window.localStorage.setItem(themeLocalStorageKey, themeToSet)
-        document.documentElement.setAttribute('data-theme', themeToSet)
-      }
-    },
-    [lightOnly],
-  )
+  const setTheme = useCallback((_next: Theme | null) => {
+    document.documentElement.setAttribute('data-theme', 'light')
+    setThemeState('light')
+  }, [])
 
   useEffect(() => {
-    if (lightOnly) {
+    try {
       window.localStorage.removeItem(themeLocalStorageKey)
-      document.documentElement.setAttribute('data-theme', 'light')
-      setThemeState('light')
-      return
+    } catch {
+      // ignore private mode / access errors
     }
-
-    let themeToSet: Theme = defaultTheme
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
-
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
-      const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
-    }
-
-    document.documentElement.setAttribute('data-theme', themeToSet)
-    setThemeState(themeToSet)
-  }, [lightOnly])
+    document.documentElement.setAttribute('data-theme', 'light')
+    setThemeState('light')
+  }, [])
 
   return <ThemeContext value={{ setTheme, theme }}>{children}</ThemeContext>
 }

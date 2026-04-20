@@ -9,6 +9,7 @@ import { CodeBlock } from '@/blocks/Code/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { ProjectsListingBlock } from '@/blocks/ProjectsListing/Component'
 import { SectionHeadingBlock } from '@/blocks/SectionHeading/Component'
 import { SlideshowBlock } from '@/blocks/Slideshow/Component'
 import { TextBlock } from '@/blocks/Text/Component'
@@ -22,6 +23,7 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
+  projectsListing: ProjectsListingBlock,
   sectionHeading: SectionHeadingBlock,
   slideshow: SlideshowBlock,
   text: TextBlock,
@@ -37,7 +39,7 @@ export const RenderBlocks: React.FC<{
 
   if (hasBlocks) {
     return (
-      <Fragment>
+      <div className="w-full divide-y-2 divide-black  ">
         {blocks.map((block, index) => {
           const { blockType } = block
 
@@ -46,7 +48,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-16" key={index}>
+                <div className="w-full" key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>
@@ -55,7 +57,7 @@ export const RenderBlocks: React.FC<{
           }
           return null
         })}
-      </Fragment>
+      </div>
     )
   }
 

@@ -21,7 +21,7 @@ export const LocaleSwitcher: React.FC<{ className?: string }> = ({ className }) 
           locale={loc}
           className={cn(
             'uppercase tracking-wide transition-opacity',
-            loc === locale ? 'opacity-100 font-semibold' : 'opacity-60 hover:opacity-100',
+            loc === locale ? 'opacity-100 font-semibold' : 'opacity-50 hover:opacity-100',
           )}
           prefetch={false}
         >

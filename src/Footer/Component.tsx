@@ -1,30 +1,15 @@
+import { FooterClient } from './Component.client'
+import { toPayloadLocale } from '@/i18n/routing'
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import { Link } from '@/i18n/navigation'
 import React from 'react'
 
-import { CMSLink } from '@/components/Link'
-import { Logo } from '@/components/Logo/Logo'
+type Props = {
+  locale: string
+}
 
-export async function Footer() {
-  const footerData = await getCachedGlobal('footer', 1)()
+export async function Footer({ locale }: Props) {
+  const payloadLocale = toPayloadLocale(locale)
+  const footerData = await getCachedGlobal('footer', 2, payloadLocale)()
 
-  const navItems = footerData?.navItems || []
-
-  return (
-    <footer className="mt-auto border-t border-border bg-background text-foreground">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
-
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
-          <nav className="flex flex-col md:flex-row gap-4">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-foreground" key={i} {...link} />
-            })}
-          </nav>
-        </div>
-      </div>
-    </footer>
-  )
+  return <FooterClient data={footerData} />
 }

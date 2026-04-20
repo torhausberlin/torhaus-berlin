@@ -211,13 +211,19 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* outline: 1px solid red; */
   }
+
   html {
     @apply bg-background;
   }
 
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col font-sans antialiased;
+    @apply bg-background text-foreground min-h-screen flex flex-col font-sans antialiased;
+  }
+
+  .sectionPy {
+    @apply py-6 lg:py-12;
   }
 }
 

@@ -4,6 +4,8 @@ declare global {
       PAYLOAD_SECRET: string
       DATABASE_URL: string
       NEXT_PUBLIC_SERVER_URL: string
+      /** Optional: serve `/api/media/...` from another origin (e.g. prod) while the app uses `NEXT_PUBLIC_SERVER_URL`. */
+      NEXT_PUBLIC_MEDIA_URL?: string
       VERCEL_PROJECT_PRODUCTION_URL: string
     }
   }

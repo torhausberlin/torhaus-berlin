@@ -1,0 +1,21 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  display: block;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
+.navLogo .image {
+  max-height: 24rem;
+  /* max-width: 16rem; */
+}
+
+:global(html[data-theme='dark']) .image {
+  filter: invert(1);
+}
