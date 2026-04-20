@@ -3,11 +3,16 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
+import { Banner } from '../../blocks/Banner/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { Code } from '../../blocks/Code/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
-import { hero } from '@/heros/config'
+import { SectionHeading } from '../../blocks/SectionHeading/config'
+import { Slideshow } from '../../blocks/Slideshow/config'
+import { Text } from '../../blocks/Text/config'
+import { TwoColumn } from '../../blocks/TwoColumn/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -58,21 +63,30 @@ export const Pages: CollectionConfig<'pages'> = {
     {
       name: 'title',
       type: 'text',
+      localized: true,
       required: true,
     },
     {
       type: 'tabs',
       tabs: [
         {
-          fields: [hero],
-          label: 'Hero',
-        },
-        {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Banner,
+                Code,
+                Archive,
+                FormBlock,
+                Slideshow,
+                Text,
+                SectionHeading,
+                TwoColumn,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

@@ -17,6 +17,7 @@
   h4,
   h5,
   h6 {
+    font-family: var(--font-heading);
     font-weight: unset;
     font-size: unset;
   }
@@ -43,8 +44,10 @@
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 86rem;
-  --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-neue-machina), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
+  --color-torhaus-yellow: #fffd38;
 }
 
 @layer utilities {
@@ -209,8 +212,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply bg-background;
+  }
+
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col font-sans antialiased;
   }
 }
 
@@ -218,7 +225,6 @@ html {
   opacity: 0;
 }
 
-html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }

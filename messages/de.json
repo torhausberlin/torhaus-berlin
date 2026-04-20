@@ -1,0 +1,42 @@
+{
+  "LocaleSwitcher": {
+    "label": "Sprache",
+    "en": "English",
+    "de": "Deutsch"
+  },
+  "Posts": {
+    "title": "Beiträge",
+    "metadataTitle": "Beiträge | Torhaus Berlin"
+  },
+  "Search": {
+    "title": "Suche",
+    "metadataTitle": "Suche | Torhaus Berlin",
+    "noResults": "Keine Ergebnisse gefunden.",
+    "placeholder": "Suchen",
+    "submit": "absenden",
+    "srLabel": "Suche"
+  },
+  "PageRange": {
+    "noResults": "Die Suche lieferte keine Ergebnisse.",
+    "showing": "{start}{dashPart} von {total} {label}",
+    "postsPlural": "Beiträge",
+    "postsSingular": "Beitrag",
+    "docsPlural": "Einträge",
+    "docsSingular": "Eintrag"
+  },
+  "Pagination": {
+    "previous": "Zurück",
+    "next": "Weiter"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "Diese Seite wurde nicht gefunden.",
+    "goHome": "Zur Startseite"
+  },
+  "Card": {
+    "noImage": "Kein Bild"
+  },
+  "Header": {
+    "search": "Suche"
+  }
+}

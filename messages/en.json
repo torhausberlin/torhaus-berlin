@@ -1,0 +1,42 @@
+{
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "de": "Deutsch"
+  },
+  "Posts": {
+    "title": "Posts",
+    "metadataTitle": "Posts | Torhaus Berlin"
+  },
+  "Search": {
+    "title": "Search",
+    "metadataTitle": "Search | Torhaus Berlin",
+    "noResults": "No results found.",
+    "placeholder": "Search",
+    "submit": "submit",
+    "srLabel": "Search"
+  },
+  "PageRange": {
+    "noResults": "Search produced no results.",
+    "showing": "Showing {start}{dashPart} of {total} {label}",
+    "postsPlural": "Posts",
+    "postsSingular": "Post",
+    "docsPlural": "Docs",
+    "docsSingular": "Doc"
+  },
+  "Pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "NotFound": {
+    "title": "404",
+    "description": "This page could not be found.",
+    "goHome": "Go home"
+  },
+  "Card": {
+    "noImage": "No image"
+  },
+  "Header": {
+    "search": "Search"
+  }
+}

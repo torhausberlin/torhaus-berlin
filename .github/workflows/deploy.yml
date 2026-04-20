@@ -1,0 +1,102 @@
+name: Deploy Torhaus Berlin
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+
+      - name: Execute deployment script
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          set -e
+          echo "🚀 Starting Torhaus Berlin deployment..."
+          ssh -o StrictHostKeyChecking=no ${{ env.USERNAME }}@${{ env.HOST }} "
+            set -e
+            echo '📂 Checking repo directory...'
+            if [ ! -d '/home/web/torhaus-berlin' ]; then
+              echo '❌ Repo directory not found!'
+              exit 1
+            fi
+            
+            echo '📥 Fetching latest changes first...'
+            cd /home/web/torhaus-berlin
+            git fetch origin
+            git reset --hard origin/main
+            
+            echo '📋 Checking updated deploy script...'
+            if [ ! -f 'scripts/deploy.sh' ]; then
+              echo '❌ Deploy script not found in scripts folder!'
+              exit 1
+            fi
+            
+            echo '🚀 Executing updated deployment script...'
+            bash scripts/deploy.sh
+          "
+          EXIT_STATUS=$?
+          if [ $EXIT_STATUS -eq 0 ]; then
+            echo "✅ Deployment completed successfully"
+          else
+            echo "❌ Deployment failed with exit status $EXIT_STATUS"
+          fi
+          exit $EXIT_STATUS
+
+      - name: Verify deployment
+        if: success()
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          echo "🔍 Verifying deployment status..."
+          ssh -o StrictHostKeyChecking=no ${{ env.USERNAME }}@${{ env.HOST }} '
+            set -e
+            export PATH=$HOME/.nvm/versions/node/v22.21.1/bin:$HOME/.local/share/pnpm:$PATH
+            
+            echo "📊 PM2 Process Status:"
+            pm2 list || true
+            echo ""
+            
+            echo "🏥 Health Check (port 4000):"
+            if curl -sf http://localhost:4000/ > /dev/null; then
+              echo "✅ Application responded on http://localhost:4000/"
+            else
+              echo "❌ Application not responding on http://localhost:4000/"
+              exit 1
+            fi
+            
+            echo ""
+            echo "📁 Directory Structure:"
+            ls -la /home/web/torhaus-berlin/
+          '
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Notify via Resend
+        uses: brunosj/actions/resend-notify@v1
+        with:
+          subject: 'GitHub Actions - Torhaus Berlin deploy failed'
+          resend_api_key: ${{ secrets.RESEND_API_KEY }}

@@ -15,6 +15,7 @@ export const Header: GlobalConfig = {
       fields: [
         link({
           appearances: false,
+          localized: true,
         }),
       ],
       maxRows: 6,
@@ -22,6 +23,43 @@ export const Header: GlobalConfig = {
         initCollapsed: true,
         components: {
           RowLabel: '@/Header/RowLabel#RowLabel',
+        },
+      },
+    },
+    {
+      name: 'externalImageLinks',
+      type: 'array',
+      label: 'External links (with image)',
+      labels: {
+        singular: 'Link',
+        plural: 'External image links',
+      },
+      fields: [
+        {
+          name: 'url',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Full URL, e.g. https://example.com',
+          },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'openInNewTab',
+          type: 'checkbox',
+          defaultValue: true,
+          label: 'Open in new tab',
+        },
+      ],
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: '@/Header/ExternalLinkRowLabel#ExternalLinkRowLabel',
         },
       },
     },

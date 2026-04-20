@@ -1,8 +1,9 @@
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidateTag } from 'next/cache'
 
 import type { Page } from '../../../payload-types'
+import { revalidateLocalizedPaths } from '../../../utilities/revalidateLocalizedPaths'
 
 export const revalidatePage: CollectionAfterChangeHook<Page> = ({
   doc,
@@ -15,7 +16,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       payload.logger.info(`Revalidating page at path: ${path}`)
 
-      revalidatePath(path)
+      revalidateLocalizedPaths(path)
       revalidateTag('pages-sitemap', 'max')
     }
 
@@ -25,7 +26,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       payload.logger.info(`Revalidating old page at path: ${oldPath}`)
 
-      revalidatePath(oldPath)
+      revalidateLocalizedPaths(oldPath)
       revalidateTag('pages-sitemap', 'max')
     }
   }
@@ -35,7 +36,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({ doc, req: { context } }) => {
   if (!context.disableRevalidate) {
     const path = doc?.slug === 'home' ? '/' : `/${doc?.slug}`
-    revalidatePath(path)
+    revalidateLocalizedPaths(path)
     revalidateTag('pages-sitemap', 'max')
   }
 

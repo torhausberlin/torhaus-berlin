@@ -1,0 +1,29 @@
+---
+description: Payload 3 — blocks, fields, localization, and types
+globs: apps/backend/**/*.ts
+alwaysApply: true
+---
+
+# Payload 3 (backend)
+
+- Define blocks with `import type { Block } from 'payload'`, **`slug` in camelCase** (matches `blockType` on stored documents and the frontend renderer).
+- **Admin UI (de + en)**: **Every field** must use a bilingual label: `label: { de: '…', en: '…' }`. Do **not** use a plain string (`label: '…'`). The same applies wherever the admin shows copy: **block** `labels.singular` / `labels.plural`, **tab** and **group** labels, **array** `labels`, **select** / **radio** **option** `label` values, and **`admin.description`** / **`placeholder`** when you set them—always **`{ de, en }`** so editors can use Payload fully in German or English (`payload.config.ts` → `i18n.supportedLanguages: { de, en }`).
+- Reuse **`@/fields`** helpers (`richTextField`, `link`, `buttonLink`, slug tabs, etc.) and the shared **Lexical** setup; avoid duplicating editor config unless the block truly needs a different feature set.
+- **Register** new blocks on the relevant collection (e.g. `Pages` → `layout` → `blocks: [...]`).
+- Use **`localized: true`** on fields that are translated; keep SEO/meta aligned with `@payloadcms/plugin-seo` fields where used.
+- After schema changes: run **`pnpm --filter backend generate:types`** so `@payload-types` stays in sync for the frontend.
+
+```ts
+// Field label (required for every field)
+{
+  name: 'title',
+  type: 'text',
+  label: { de: 'Titel', en: 'Title' },
+}
+
+// Block labels (required)
+labels: {
+  singular: { de: '…', en: '…' },
+  plural: { de: '…', en: '…' },
+},
+```

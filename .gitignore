@@ -3,9 +3,12 @@ dist / media
 node_modules
 .DS_Store
 .env
+.env.development
+.env.production
 .next
 next-env.d.ts
 .vercel
+/mockups/*
 
 # Payload default media upload directory
 public/media/

@@ -44,6 +44,12 @@ export const plugins: Plugin[] = [
       hooks: {
         afterChange: [revalidateRedirects],
       },
+      admin: {
+        group: {
+          de: 'System',
+          en: 'System',
+        },
+      },
     },
   }),
   nestedDocsPlugin({
@@ -78,15 +84,49 @@ export const plugins: Plugin[] = [
           return field
         })
       },
+      labels: {
+        singular: {
+          de: 'Formular',
+          en: 'Form',
+        },
+        plural: {
+          de: 'Formulare',
+          en: 'Forms',
+        },
+      },
+      admin: {
+        group: {
+          de: 'Formulare',
+          en: 'Forms',
+        },
+      },
     },
-  }),
-  searchPlugin({
-    collections: ['posts'],
-    beforeSync: beforeSyncWithSearch,
-    searchOverrides: {
-      fields: ({ defaultFields }) => {
-        return [...defaultFields, ...searchFields]
+    formSubmissionOverrides: {
+      labels: {
+        singular: {
+          de: 'Formularübermittlung',
+          en: 'Form submission',
+        },
+        plural: {
+          de: 'Formularübermittlungen',
+          en: 'Form submissions',
+        },
+      },
+      admin: {
+        group: {
+          de: 'Formulare',
+          en: 'Forms',
+        },
       },
     },
   }),
+  // searchPlugin({
+  //   collections: ['posts'],
+  //   beforeSync: beforeSyncWithSearch,
+  //   searchOverrides: {
+  //     fields: ({ defaultFields }) => {
+  //       return [...defaultFields, ...searchFields]
+  //     },
+  //   },
+  // }),
 ]

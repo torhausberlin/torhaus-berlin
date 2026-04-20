@@ -1,11 +1,15 @@
 import type { Block } from 'payload'
 
-import {
-  FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
+import { richTextField } from '@/fields/richTextField'
+
+const introContentField = richTextField(
+  'introContent',
+  true,
+  'Einleitungstext',
+  'Intro content',
+  '',
+  ['h1', 'h2', 'h3', 'h4'],
+)
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -23,22 +27,11 @@ export const FormBlock: Block = {
       label: 'Enable Intro Content',
     },
     {
-      name: 'introContent',
-      type: 'richText',
+      ...introContentField,
       admin: {
+        ...introContentField.admin,
         condition: (_, { enableIntro }) => Boolean(enableIntro),
       },
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-          ]
-        },
-      }),
-      label: 'Intro Content',
     },
   ],
   graphQL: {

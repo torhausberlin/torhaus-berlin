@@ -9,8 +9,24 @@ const config = {
               '--tw-prose-body': 'var(--text)',
               '--tw-prose-headings': 'var(--text)',
               h1: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
                 fontWeight: 'normal',
                 marginBottom: '0.25em',
+              },
+              h2: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
+              },
+              h3: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
+              },
+              h4: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
+              },
+              h5: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
+              },
+              h6: {
+                fontFamily: 'var(--font-heading), ui-sans-serif, system-ui, sans-serif',
               },
             },
           ],

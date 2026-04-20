@@ -1,0 +1,17 @@
+---
+description: Next.js 16 frontend — next-intl, blocks, and Payload types
+globs: apps/frontend/**/*.{ts,tsx}
+alwaysApply: true
+---
+
+# Next.js 16 frontend
+
+- Routes live under **`app/[locale]/`**. Use **next-intl** (`useTranslations`, `getMessages`, `setRequestLocale`) and **`routing`** from `i18n/routing.ts` (`locales: ['en','de']`, **default `de`**, `localePrefix: 'never'`).
+- **Static UI strings**: only `apps/frontend/messages/de.json` and `en.json` — keep keys consistent across both files.
+- **CMS content**: fetch with **`locale`** (e.g. `fetchFromAPI(endpoint, apiUrl, options, locale)`) so Payload returns the correct localized fields.
+
+# Block components
+
+- One component per block under **`app/components/blocks/`**, typed from **`@payload-types`** (e.g. `Page['layout']` / discriminated `blockType`).
+- **`RenderBlocks.tsx`**: add a **`switch` case** for each `blockType`; respect **`shouldHaveBorder` / `noBorderBlocks`** when the block is full-bleed or manages its own layout edges.
+- Prefer existing **`cn`** (`@lib/cn`), layout, and typography patterns from sibling block components and `app/globals.css`.

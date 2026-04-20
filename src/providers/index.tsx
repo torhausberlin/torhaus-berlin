@@ -5,9 +5,10 @@ import { ThemeProvider } from './Theme'
 
 export const Providers: React.FC<{
   children: React.ReactNode
-}> = ({ children }) => {
+  lightOnly?: boolean
+}> = ({ children, lightOnly }) => {
   return (
-    <ThemeProvider>
+    <ThemeProvider lightOnly={lightOnly}>
       <HeaderThemeProvider>{children}</HeaderThemeProvider>
     </ThemeProvider>
   )
