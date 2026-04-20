@@ -43,7 +43,7 @@ const getPagesSitemap = unstable_cache(
       })
     }
 
-    const defaultSitemap = [...localized('/search'), ...localized('/posts')]
+    const defaultSitemap = [...localized('/posts')]
 
     const sitemap = results.docs
       ? results.docs.flatMap((page) => {

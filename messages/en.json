@@ -8,14 +8,6 @@
     "title": "Posts",
     "metadataTitle": "Posts | Torhaus Berlin"
   },
-  "Search": {
-    "title": "Search",
-    "metadataTitle": "Search | Torhaus Berlin",
-    "noResults": "No results found.",
-    "placeholder": "Search",
-    "submit": "submit",
-    "srLabel": "Search"
-  },
   "PageRange": {
     "noResults": "Search produced no results.",
     "showing": "Showing {start}{dashPart} of {total} {label}",
@@ -35,8 +27,5 @@
   },
   "Card": {
     "noImage": "No image"
-  },
-  "Header": {
-    "search": "Search"
   }
 }

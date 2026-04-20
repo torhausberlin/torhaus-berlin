@@ -8,14 +8,6 @@
     "title": "Beiträge",
     "metadataTitle": "Beiträge | Torhaus Berlin"
   },
-  "Search": {
-    "title": "Suche",
-    "metadataTitle": "Suche | Torhaus Berlin",
-    "noResults": "Keine Ergebnisse gefunden.",
-    "placeholder": "Suchen",
-    "submit": "absenden",
-    "srLabel": "Suche"
-  },
   "PageRange": {
     "noResults": "Die Suche lieferte keine Ergebnisse.",
     "showing": "{start}{dashPart} von {total} {label}",
@@ -35,8 +27,5 @@
   },
   "Card": {
     "noImage": "Kein Bild"
-  },
-  "Header": {
-    "search": "Suche"
   }
 }

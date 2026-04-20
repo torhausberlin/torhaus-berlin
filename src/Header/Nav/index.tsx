@@ -6,9 +6,6 @@ import type { Header as HeaderType } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
-import { Link } from '@/i18n/navigation'
-import { SearchIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 
 function isValidExternalUrl(value: string) {
@@ -16,7 +13,6 @@ function isValidExternalUrl(value: string) {
 }
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
-  const t = useTranslations('Header')
   const navItems = data?.navItems || []
   const externalImageLinks = data?.externalImageLinks || []
 
@@ -47,10 +43,6 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         return <CMSLink key={i} {...link} appearance="link" />
       })}
       <LocaleSwitcher className="text-muted-foreground gap-3" />
-      <Link href="/search">
-        <span className="sr-only">{t('search')}</span>
-        <SearchIcon className="w-5 text-primary" />
-      </Link>
     </nav>
   )
 }

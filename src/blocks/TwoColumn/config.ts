@@ -96,9 +96,9 @@ export const TwoColumn: Block = {
       type: 'blocks',
       label: 'Left column',
       blocks: columnBlockOptions,
+      maxRows: 1,
       admin: {
         initCollapsed: true,
-        maxRows: 1,
       },
     },
     {
@@ -106,9 +106,9 @@ export const TwoColumn: Block = {
       type: 'blocks',
       label: 'Right column',
       blocks: columnBlockOptions,
+      maxRows: 1,
       admin: {
         initCollapsed: true,
-        maxRows: 1,
       },
     },
   ],

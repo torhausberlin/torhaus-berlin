@@ -1,4 +1,7 @@
 import type { Field } from 'payload'
+
+/** Rich text only — avoids `Field` union where `required` is invalid (e.g. UIField). */
+type RichTextFieldConfig = Extract<Field, { type: 'richText' }>
 import {
   BoldFeature,
   FixedToolbarFeature,
@@ -34,7 +37,7 @@ export const richTextField = (
   adminDescription: string = '',
   enabledHeadingSizes: LexicalHeadingSize[] = defaultHeadingSizes,
   linkRelationTo: Array<'pages' | 'posts'> = ['pages', 'posts'],
-): Field => ({
+): RichTextFieldConfig => ({
   name,
   localized: true,
   type: 'richText',
