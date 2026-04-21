@@ -38,7 +38,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         }}
       /> */}
       <Header locale={locale} />
-      {children}
+      <div className="max-lg:pt-[4.75rem]">{children}</div>
       <Footer locale={locale} />
     </NextIntlClientProvider>
   )

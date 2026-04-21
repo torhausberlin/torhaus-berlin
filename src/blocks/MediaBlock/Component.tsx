@@ -50,9 +50,12 @@ export const MediaBlock: React.FC<Props> = (props) => {
           className={cn(
             'relative w-full min-h-0 overflow-hidden bg-black',
             fillHeight && 'flex-1 lg:min-h-0',
-            useMinHeightFallback && 'min-h-[55vh]',
+            useMinHeightFallback && 'min-h-[38dvh] md:min-h-[55vh]',
+            useViewportHeight && 'max-md:max-h-[52dvh]',
           )}
-          style={useViewportHeight ? { height: `${viewportHeightPercent}vh` } : undefined}
+          style={
+            useViewportHeight ? { height: `${viewportHeightPercent}dvh` } : undefined
+          }
         >
           <Media
             className="absolute inset-0 block h-full w-full"

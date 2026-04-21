@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import type { Page } from '@/payload-types'
 
@@ -14,6 +14,7 @@ import { SectionHeadingBlock } from '@/blocks/SectionHeading/Component'
 import { SlideshowBlock } from '@/blocks/Slideshow/Component'
 import { TextBlock } from '@/blocks/Text/Component'
 import { TwoColumnBlock } from '@/blocks/TwoColumn/Component'
+import { RevealOnScroll } from '@/components/RevealOnScroll'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -48,10 +49,15 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="w-full" key={index}>
+                <RevealOnScroll
+                  key={index}
+                  className="w-full"
+                  delay={index * 0.06}
+                  immediate={index === 0}
+                >
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
-                </div>
+                </RevealOnScroll>
               )
             }
           }

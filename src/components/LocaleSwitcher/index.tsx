@@ -6,7 +6,11 @@ import { cn } from '@/utilities/ui'
 import { useLocale, useTranslations } from 'next-intl'
 import React from 'react'
 
-export const LocaleSwitcher: React.FC<{ className?: string }> = ({ className }) => {
+export const LocaleSwitcher: React.FC<{
+  className?: string
+  /** e.g. close mobile menu after switching locale */
+  onNavigate?: () => void
+}> = ({ className, onNavigate }) => {
   const t = useTranslations('LocaleSwitcher')
   const pathname = usePathname()
   const locale = useLocale()
@@ -23,6 +27,7 @@ export const LocaleSwitcher: React.FC<{ className?: string }> = ({ className }) 
             'uppercase tracking-wide transition-opacity',
             loc === locale ? 'opacity-100 font-semibold' : 'opacity-50 hover:opacity-100',
           )}
+          onClick={onNavigate}
           prefetch={false}
         >
           {loc}

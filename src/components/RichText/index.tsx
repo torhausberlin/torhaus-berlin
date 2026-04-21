@@ -71,9 +71,9 @@ export default function RichText(props: Props) {
         {
           container: enableGutter,
           'max-w-none': !enableGutter,
-          'mx-auto prose md:prose-md dark:prose-invert prose-p:text-lg prose-p:font-medium prose-p:leading-snug md:prose-p:text-xl prose-li:text-lg prose-li:font-medium prose-li:leading-snug md:prose-li:text-xl':
+          'mx-auto prose md:prose-md dark:prose-invert prose-p:text-base prose-p:font-medium prose-p:leading-snug md:prose-p:text-xl prose-li:text-base prose-li:font-medium prose-li:leading-snug md:prose-li:text-xl':
             enableProse,
-          '[&_p]:text-lg [&_p]:font-medium md:[&_p]:text-xl [&_p]:leading-snug [&_li]:text-lg [&_li]:font-medium md:[&_li]:text-xl [&_li]:leading-snug':
+          '[&_p]:text-base [&_p]:font-medium md:[&_p]:text-xl [&_p]:leading-snug [&_li]:text-base [&_li]:font-medium md:[&_li]:text-xl [&_li]:leading-snug':
             !enableProse,
         },
         className,

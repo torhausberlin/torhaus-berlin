@@ -37,7 +37,7 @@ export const TwoColumnBlock: React.FC<Props> = ({
 
   const leftCellClassName = cn(
     'flex min-h-0 flex-col border-black lg:h-full lg:min-h-0',
-    !hasImageOrSlideshow && 'min-h-[45vh] lg:min-h-0',
+    !hasImageOrSlideshow && 'md:min-h-[45vh] lg:min-h-0',
     'border-b-2 lg:border-b-0 lg:border-r-2',
     hasImageOrSlideshow && (leftHasMedia ? undefined : textCellWhenMedia),
   )
@@ -66,7 +66,7 @@ export const TwoColumnBlock: React.FC<Props> = ({
           'grid w-full grid-cols-1 border-black lg:grid-cols-2 lg:items-stretch',
           hasImageOrSlideshow
             ? 'min-h-0 lg:min-h-[80vh] lg:grid-rows-[minmax(80vh,auto)]'
-            : 'min-h-[50vh] lg:min-h-[60vh]',
+            : 'md:min-h-[50vh] lg:min-h-[60vh]',
           headingText ? 'border-t-2 border-black' : '',
         )}
       >

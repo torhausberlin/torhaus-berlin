@@ -42,8 +42,6 @@ export function ProjectsListingClient(props: Props) {
     }
   }, [expandedId, filtered])
 
-  const columnCount = Math.min(3, Math.max(1, filtered.length))
-
   const toggleExpanded = useCallback((projectId: string) => {
     setExpandedId((current) => (current === projectId ? null : projectId))
   }, [])
@@ -66,7 +64,7 @@ export function ProjectsListingClient(props: Props) {
       className={cn('w-full', !disableInnerContainer && 'container')}
       id={blockId ? `block-${blockId}` : undefined}
     >
-      <div className="flex flex-wrap gap-2 py-4 container">
+      <div className="flex w-full flex-wrap gap-2 py-4">
         <button
           type="button"
           onClick={() => setYearFilter('all')}
@@ -92,12 +90,7 @@ export function ProjectsListingClient(props: Props) {
         ))}
       </div>
 
-      <div
-        className="grid w-full gap-px border-t-2 border-black bg-black px-px pb-px"
-        style={{
-          gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-        }}
-      >
+      <div className="grid w-full grid-cols-1 gap-px border-t-2 border-black bg-black px-px pb-px sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((project) => {
           const isExpanded = expandedId === project.id
           const title = project.title
@@ -113,27 +106,34 @@ export function ProjectsListingClient(props: Props) {
                   aria-expanded={false}
                   aria-label={title ? `${title}` : 'Project'}
                   onClick={() => toggleExpanded(project.id)}
-                  className="group relative flex aspect-3/4 w-full cursor-pointer flex-col text-left outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  className="group relative flex w-full cursor-pointer flex-col text-left outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 md:aspect-3/4"
                 >
                   {image && typeof image === 'object' ? (
                     <>
-                      <Media
-                        className="absolute inset-0 block h-full w-full"
-                        fill
-                        htmlElement="div"
-                        imgClassName="object-cover"
-                        resource={image}
-                        size="(max-width: 768px) 100vw, 33vw"
-                      />
-                      <div
-                        className="pointer-events-none absolute inset-0 bg-white opacity-0 transition-opacity duration-200 group-hover:opacity-90"
-                        aria-hidden
-                      />
+                      <div className="relative aspect-3/4 w-full shrink-0 overflow-hidden md:absolute md:inset-0 md:h-full">
+                        <Media
+                          className="absolute inset-0 block h-full w-full"
+                          fill
+                          htmlElement="div"
+                          imgClassName="object-cover"
+                          resource={image}
+                          size="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                        <div
+                          className="pointer-events-none absolute inset-0 bg-white opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-90 max-md:hidden"
+                          aria-hidden
+                        />
+                        {title ? (
+                          <div className="absolute inset-0 z-1 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-100 md:flex">
+                            <span className="text-center font-mono text-lg font-bold text-black md:text-xl">
+                              {title}
+                            </span>
+                          </div>
+                        ) : null}
+                      </div>
                       {title ? (
-                        <div className="absolute inset-0 z-[1] flex items-center justify-center p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                          <span className="text-center font-mono text-lg font-bold text-black md:text-xl">
-                            {title}
-                          </span>
+                        <div className="border-t border-black bg-white p-3 md:hidden">
+                          <span className="font-mono text-base font-bold text-black">{title}</span>
                         </div>
                       ) : null}
                     </>
@@ -156,7 +156,7 @@ export function ProjectsListingClient(props: Props) {
                         type="button"
                         aria-label={closeLabel}
                         onClick={collapse}
-                        className="relative aspect-4/3 min-h-[12rem] w-full cursor-pointer border-b border-black text-left md:border-b-0 md:border-r"
+                        className="relative aspect-4/3 min-h-48 w-full cursor-pointer border-b border-black text-left md:border-b-0 md:border-r"
                       >
                         <Media
                           className="absolute inset-0 block h-full w-full"

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 import { fontNeueMachina, fontRobotoMono, fontRubik } from '@/fonts/app-fonts'
 import { cn } from '@/utilities/ui'
@@ -36,4 +36,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     creator: '@payloadcms',
   },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }

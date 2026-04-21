@@ -35,10 +35,10 @@ const config = {
           css: [
             {
               h1: {
-                fontSize: '2.5rem',
+                fontSize: '2rem',
               },
               h2: {
-                fontSize: '1.25rem',
+                fontSize: '1.125rem',
                 fontWeight: 600,
               },
             },

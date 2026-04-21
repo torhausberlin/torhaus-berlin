@@ -68,7 +68,7 @@ export const SlideshowBlock: React.FC<Props> = ({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/50 to-transparent" />
           <Button
             aria-label="Previous slide"
-            className="absolute left-2 top-1/2 z-10 size-10 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
+            className="absolute left-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
             onClick={() => go(-1)}
             size="icon"
             type="button"
@@ -78,7 +78,7 @@ export const SlideshowBlock: React.FC<Props> = ({
           </Button>
           <Button
             aria-label="Next slide"
-            className="absolute right-2 top-1/2 z-10 size-10 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
+            className="absolute right-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
             onClick={() => go(1)}
             size="icon"
             type="button"
