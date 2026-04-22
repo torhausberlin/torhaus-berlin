@@ -6,7 +6,7 @@ import type { SectionHeadingBlock as SectionHeadingBlockProps } from '@/payload-
 import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 
 const levelClass: Record<'h2' | 'h3' | 'h4', string> = {
-  h2: 'text-2xl md:text-5xl font-semibold font-heading',
+  h2: 'text-3xl md:text-5xl font-semibold font-heading',
   h3: 'text-2xl md:text-3xl font-semibold font-heading',
   h4: 'text-xl md:text-2xl font-semibold font-heading',
 }

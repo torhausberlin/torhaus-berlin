@@ -35,5 +35,9 @@
     "close": "Schließen",
     "year": "Jahr",
     "participants": "Teilnehmende"
+  },
+  "EventListing": {
+    "empty": "Keine anstehenden Termine in diesem Zeitraum.",
+    "allDay": "Ganztägig"
   }
 }

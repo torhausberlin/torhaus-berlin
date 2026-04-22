@@ -170,6 +170,7 @@ export interface Page {
     | TextBlock
     | SectionHeadingBlock
     | ProjectsListingBlock
+    | EventListingBlock
     | TwoColumnBlock
   )[];
   meta?: {
@@ -896,6 +897,21 @@ export interface Project {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventListingBlock".
+ */
+export interface EventListingBlock {
+  sectionHeading?: {
+    heading?: string | null;
+    level?: ('h2' | 'h3' | 'h4') | null;
+  };
+  daysAhead?: number | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'eventListing';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TwoColumnBlock".
  */
 export interface TwoColumnBlock {
@@ -1220,6 +1236,7 @@ export interface PagesSelect<T extends boolean = true> {
         text?: T | TextBlockSelect<T>;
         sectionHeading?: T | SectionHeadingBlockSelect<T>;
         projectsListing?: T | ProjectsListingBlockSelect<T>;
+        eventListing?: T | EventListingBlockSelect<T>;
         twoColumn?: T | TwoColumnBlockSelect<T>;
       };
   meta?:
@@ -1383,6 +1400,22 @@ export interface ProjectsListingBlockSelect<T extends boolean = true> {
   populateBy?: T;
   limit?: T;
   selectedDocs?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventListingBlock_select".
+ */
+export interface EventListingBlockSelect<T extends boolean = true> {
+  sectionHeading?:
+    | T
+    | {
+        heading?: T;
+        level?: T;
+      };
+  daysAhead?: T;
+  limit?: T;
   id?: T;
   blockName?: T;
 }

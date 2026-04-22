@@ -49,6 +49,8 @@ const imageRemotePatterns = Array.from(
 )
 
 const nextConfig: NextConfig = {
+  // Keep node-ical + Temporal deps out of the RSC bundle (avoids BigInt/runtime errors when parsed).
+  serverExternalPackages: ['node-ical', 'temporal-polyfill', 'rrule-temporal'],
   // Temporarily required on Windows until Next.js fixes Turbopack Sass resolution.
   // See: https://github.com/vercel/next.js/issues/86431
   sassOptions: {

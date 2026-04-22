@@ -7,6 +7,7 @@ import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CodeBlock } from '@/blocks/Code/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
+import { EventListingBlock } from '@/blocks/EventListing/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProjectsListingBlock } from '@/blocks/ProjectsListing/Component'
@@ -21,6 +22,7 @@ const blockComponents = {
   code: CodeBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
+  eventListing: EventListingBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   projectsListing: ProjectsListingBlock,
