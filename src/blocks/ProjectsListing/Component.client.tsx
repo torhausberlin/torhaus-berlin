@@ -6,7 +6,7 @@ import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
 import { useTranslations } from 'next-intl'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type Props = {
   projects: Project[]
@@ -50,6 +50,7 @@ export function ProjectsListingClient(props: Props) {
 
   const [yearFilter, setYearFilter] = useState<number | 'all'>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const expandedCloseBarRef = useRef<HTMLDivElement | null>(null)
 
   const filtered = useMemo(() => {
     if (yearFilter === 'all') return projects
@@ -83,6 +84,29 @@ export function ProjectsListingClient(props: Props) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [collapse, expandedId])
+
+  useEffect(() => {
+    if (!expandedId) return
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches
+    if (!isMobile) return
+
+    let cancelled = false
+    const run = () => {
+      if (cancelled) return
+      const el = expandedCloseBarRef.current
+      if (!el) return
+      const instant = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      el.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'start' })
+    }
+
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(run)
+    })
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(id)
+    }
+  }, [expandedId])
 
   return (
     <section
@@ -173,7 +197,10 @@ export function ProjectsListingClient(props: Props) {
                 </button>
               ) : (
                 <div className="flex w-full flex-col">
-                  <div className="flex justify-end border-b border-black px-3 py-2">
+                  <div
+                    ref={expandedCloseBarRef}
+                    className="flex justify-end border-b border-black px-3 py-2 max-lg:scroll-mt-[calc(0.75rem+2.75rem+0.75rem+1px)] md:max-lg:scroll-mt-[calc(1rem+5rem+1rem+1px)]"
+                  >
                     <button
                       type="button"
                       onClick={collapse}
