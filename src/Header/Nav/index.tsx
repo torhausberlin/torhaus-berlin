@@ -82,8 +82,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   const mobileOverlayLinkClass = (active: boolean) =>
     cn(
-      'text-center font-sans text-3xl font-semibold leading-tight tracking-tight text-black transition-opacity hover:opacity-70 sm:text-4xl',
-      active ? 'underline underline-offset-[0.35em] decoration-2' : 'underline-transparent',
+      'text-center font-sans text-2xl font-semibold leading-tight tracking-tight text-black transition-opacity hover:opacity-70 sm:text-3xl',
+      active ? 'underline underline-offset-[0.25em] decoration-2' : 'underline-transparent',
     )
 
   if (variant === 'mobile') {
@@ -116,50 +116,53 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       },
     }
 
+    // Mobile version
     return (
       <motion.nav
         aria-label="Main"
-        className="flex min-w-0 flex-col items-center gap-6 text-center"
+        className="flex min-w-0 flex-col items-center gap-8 text-center"
         variants={overlayList}
         initial="hidden"
         animate={overlayOpen ? 'visible' : 'hidden'}
       >
-        {navItems.map(({ link }, i) => {
-          const resolved = resolveCMSLinkHref(link)
-          const active = isActiveNavPath(pathname, resolved)
+        <div className="flex flex-col items-center gap-6">
+          {navItems.map(({ link }, i) => {
+            const resolved = resolveCMSLinkHref(link)
+            const active = isActiveNavPath(pathname, resolved)
 
-          return (
-            <motion.div
-              key={i}
-              className="flex items-center justify-center gap-3"
-              variants={overlayItem}
-            >
-              <img
-                src="/icons/arrow.svg"
-                alt=""
-                className="h-5 w-auto shrink-0 sm:h-6"
-                aria-hidden
-              />
-              <CMSLink
-                {...link}
-                appearance="inline"
-                className={mobileOverlayLinkClass(active)}
-                onClick={onNavigate}
-              />
-            </motion.div>
-          )
-        })}
+            return (
+              <motion.div
+                key={i}
+                className="flex items-center justify-center gap-3"
+                variants={overlayItem}
+              >
+                <img
+                  src="/icons/arrow.svg"
+                  alt=""
+                  className="h-5 w-auto shrink-0 sm:h-6"
+                  aria-hidden
+                />
+                <CMSLink
+                  {...link}
+                  appearance="inline"
+                  className={mobileOverlayLinkClass(active)}
+                  onClick={onNavigate}
+                />
+              </motion.div>
+            )
+          })}
+        </div>
 
         <motion.div className="w-full" variants={overlayItem}>
           <LocaleSwitcher
-            className="w-full shrink-0 justify-center gap-6 text-2xl font-semibold tracking-[0.2em] text-black sm:text-3xl sm:gap-8"
+            className="w-full shrink-0 justify-center gap-4 text-xl font-semibold tracking-[0.2em] text-black sm:text-2xl"
             onNavigate={onNavigate}
           />
         </motion.div>
 
         {externalImageLinks.length > 0 ? (
           <motion.div
-            className="flex w-full flex-wrap items-center justify-center gap-5 border-t border-black/15 pt-4"
+            className="flex w-full flex-wrap items-center justify-center gap-5"
             variants={overlayItem}
           >
             {externalImageLinks.map((row, i) => (
@@ -177,6 +180,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
     )
   }
 
+  // Desktop version
   return (
     <div className="flex min-w-0 flex-1 items-center justify-between gap-y-3 md:gap-y-0">
       <nav
@@ -188,11 +192,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           const active = isActiveNavPath(pathname, resolved)
 
           return (
-            <div className="flex items-center gap-2" key={i}>
+            <div className="group flex items-center gap-2" key={i}>
               <img
                 src="/icons/arrow.svg"
                 alt=""
-                className="h-[0.55rem] w-auto shrink-0 md:h-4"
+                className="h-[0.55rem] w-auto shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1 md:h-4"
                 aria-hidden
               />
               <CMSLink {...link} appearance="inline" className={linkClass(active)} />
@@ -202,7 +206,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       </nav>
 
       <div className="flex items-center justify-center gap-4">
-        <LocaleSwitcher className="shrink-0 gap-3 text-sm font-medium text-black md:pl-2" />
+        <LocaleSwitcher className="shrink-0 gap-3 text-base font-medium text-black md:pl-2" />
         {externalImageLinks.length > 0 ? (
           <div className="flex items-center gap-5 border-black/15 pl-2 md:pl-6">
             {externalImageLinks.map((row, i) => (

@@ -6,6 +6,7 @@ import RichText from '@/components/RichText'
 
 import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
+import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 import { Media } from '../../components/Media'
 
 type Props = MediaBlockProps & {
@@ -18,7 +19,7 @@ type Props = MediaBlockProps & {
   disableInnerContainer?: boolean
   /** When true, image grows with the two-column row (use with viewport height 0 or any). */
   fillHeight?: boolean
-}
+} & RevealableBlockProps
 
 export const MediaBlock: React.FC<Props> = (props) => {
   const {
@@ -31,6 +32,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
     staticImage,
     disableInnerContainer,
     viewportHeightPercent: viewportHeightPercentFromDoc,
+    revealStaggerIndex,
   } = props
 
   const viewportHeightPercent =
@@ -44,6 +46,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
   const useMinHeightFallback = !fillHeight && !useViewportHeight
 
   return (
+    <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
     <div className={cn('flex w-full flex-col', fillHeight && 'min-h-0 flex-1', useContainer && 'container', className)}>
       {(media || staticImage) && (
         <div
@@ -79,5 +82,6 @@ export const MediaBlock: React.FC<Props> = (props) => {
         </div>
       )}
     </div>
+    </BlockScrollReveal>
   )
 }

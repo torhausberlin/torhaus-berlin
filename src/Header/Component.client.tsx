@@ -66,7 +66,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
             <button
               aria-expanded={isMobileMenuOpen}
               aria-label="Toggle navigation menu"
-              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center border border-black text-black lg:hidden"
+              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center  text-black lg:hidden"
               type="button"
               onClick={() => setIsMobileMenuOpen((open) => !open)}
             >
@@ -100,7 +100,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           className={cn(
             'absolute left-0 right-0 top-full z-40 border-b border-black bg-torhaus-yellow shadow-md transition-[max-height] duration-300 ease-in-out lg:hidden',
             isMobileMenuOpen
-              ? 'pointer-events-auto max-h-[min(calc(100dvh-4.75rem),48rem)] overflow-y-auto'
+              ? 'pointer-events-auto max-h-[min(calc(100dvh-0.75rem-2.75rem-0.75rem-1px),48rem)] md:max-h-[min(calc(100dvh-1rem-5rem-1rem-1px),48rem)] overflow-y-auto'
               : 'pointer-events-none max-h-0 overflow-hidden',
           )}
         >

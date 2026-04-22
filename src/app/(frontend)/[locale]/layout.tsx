@@ -1,11 +1,10 @@
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
-import { AdminBar } from '@/components/AdminBar'
-import { DocumentLang } from '@/components/DocumentLang'
-import { routing } from '@/i18n/routing'
+import { JsonLd } from '@/components/JsonLd'
+import { routing, type AppLocale } from '@/i18n/routing'
+import { toAbsoluteSeoUrl, pathnameWithLocale } from '@/utilities/seoPaths'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
-import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
@@ -20,7 +19,6 @@ export function generateStaticParams() {
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
-  const { isEnabled: preview } = await draftMode()
 
   if (!hasLocale(routing.locales, locale)) {
     notFound()
@@ -28,17 +26,34 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   setRequestLocale(locale)
   const messages = await getMessages()
+  const l = locale as AppLocale
+  const siteUrl = toAbsoluteSeoUrl(pathnameWithLocale('/', l))
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <DocumentLang />
-      {/* <AdminBar
-        adminBarProps={{
-          preview,
-        }}
-      /> */}
+      <JsonLd
+        data={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Torhaus Berlin e.V.',
+            url: siteUrl,
+            publisher: { '@id': `${siteUrl}#organization` },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@id': `${siteUrl}#organization`,
+            '@type': 'Organization',
+            name: 'Torhaus Berlin e.V.',
+            url: siteUrl,
+          },
+        ]}
+      />
       <Header locale={locale} />
-      <div className="max-lg:pt-[4.75rem]">{children}</div>
+      {/* Match fixed header bar height (see HeaderClient: py-3 + size-11 + border; md: py-4 + size-20). */}
+      <div className="max-lg:pt-[calc(0.75rem+2.75rem+0.75rem+1px)] md:max-lg:pt-[calc(1rem+5rem+1rem+1px)]">
+        {children}
+      </div>
       <Footer locale={locale} />
     </NextIntlClientProvider>
   )

@@ -6,6 +6,7 @@ import { Media } from '@/components/Media'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 import React, { useCallback, useEffect, useState } from 'react'
 
 type Props = SlideshowBlockProps & {
@@ -13,12 +14,13 @@ type Props = SlideshowBlockProps & {
   id?: string
   /** When true, fill the parent (e.g. two-column); sharp edges, object-cover. */
   unboxed?: boolean
-}
+} & RevealableBlockProps
 
 export const SlideshowBlock: React.FC<Props> = ({
   disableInnerContainer,
   gallery,
   id,
+  revealStaggerIndex,
   unboxed,
 }) => {
   const slides =
@@ -68,23 +70,29 @@ export const SlideshowBlock: React.FC<Props> = ({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/50 to-transparent" />
           <Button
             aria-label="Previous slide"
-            className="absolute left-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
+            className="group absolute left-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white transition-[background-color,box-shadow,border-color] hover:cursor-pointer hover:border-white/90 hover:bg-neutral-900 hover:shadow-md hover:shadow-black/40 hover:text-white focus-visible:text-white"
             onClick={() => go(-1)}
             size="icon"
             type="button"
             variant="ghost"
           >
-            <ChevronLeft className="size-6" />
+            <ChevronLeft
+              className="size-6 text-white transition-transform duration-200 group-hover:-translate-x-0.5"
+              aria-hidden
+            />
           </Button>
           <Button
             aria-label="Next slide"
-            className="absolute right-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white hover:bg-neutral-900 hover:cursor-pointer"
+            className="group absolute right-2 top-1/2 z-10 size-11 min-h-11 min-w-11 -translate-y-1/2 border-2 border-white bg-black text-white transition-[background-color,box-shadow,border-color] hover:cursor-pointer hover:border-white/90 hover:bg-neutral-900 hover:shadow-md hover:shadow-black/40 hover:text-white focus-visible:text-white"
             onClick={() => go(1)}
             size="icon"
             type="button"
             variant="ghost"
           >
-            <ChevronRight className="size-6" />
+            <ChevronRight
+              className="size-6 text-white transition-transform duration-200 group-hover:translate-x-0.5"
+              aria-hidden
+            />
           </Button>
           <div
             aria-live="polite"
@@ -110,15 +118,21 @@ export const SlideshowBlock: React.FC<Props> = ({
   )
 
   if (unboxed) {
-    return <div className="flex min-h-0 w-full flex-1 flex-col">{inner}</div>
+    return (
+      <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
+        <div className="flex min-h-0 w-full flex-1 flex-col">{inner}</div>
+      </BlockScrollReveal>
+    )
   }
 
   return (
-    <div
-      className={cn('w-full', !disableInnerContainer && 'container')}
-      id={id ? `block-${id}` : undefined}
-    >
-      {inner}
-    </div>
+    <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
+      <div
+        className={cn('w-full', !disableInnerContainer && 'container')}
+        id={id ? `block-${id}` : undefined}
+      >
+        {inner}
+      </div>
+    </BlockScrollReveal>
   )
 }

@@ -14,7 +14,6 @@ import { SectionHeadingBlock } from '@/blocks/SectionHeading/Component'
 import { SlideshowBlock } from '@/blocks/Slideshow/Component'
 import { TextBlock } from '@/blocks/Text/Component'
 import { TwoColumnBlock } from '@/blocks/TwoColumn/Component'
-import { RevealOnScroll } from '@/components/RevealOnScroll'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -29,6 +28,12 @@ const blockComponents = {
   slideshow: SlideshowBlock,
   text: TextBlock,
   twoColumn: TwoColumnBlock,
+}
+
+/** Layout-only props passed from RenderBlocks; not in CMS payload types. */
+type BlockWithLayoutProps = Page['layout'][0] & {
+  disableInnerContainer?: boolean
+  revealStaggerIndex: number
 }
 
 export const RenderBlocks: React.FC<{
@@ -48,16 +53,14 @@ export const RenderBlocks: React.FC<{
             const Block = blockComponents[blockType]
 
             if (Block) {
+              const BlockComponent = Block as React.ComponentType<BlockWithLayoutProps>
               return (
-                <RevealOnScroll
+                <BlockComponent
                   key={index}
-                  className="w-full"
-                  delay={index * 0.06}
-                  immediate={index === 0}
-                >
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
-                </RevealOnScroll>
+                  {...block}
+                  disableInnerContainer
+                  revealStaggerIndex={index}
+                />
               )
             }
           }

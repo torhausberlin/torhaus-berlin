@@ -1,7 +1,7 @@
 {
   "name": "torhaus-berlin",
   "version": "1.0.0",
-  "description": "Website template for Payload",
+  "description": "Website template for Torhaus Berlin e.V.",
   "license": "MIT",
   "type": "module",
   "scripts": {

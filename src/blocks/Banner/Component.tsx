@@ -1,15 +1,18 @@
 import type { BannerBlock as BannerBlockProps } from 'src/payload-types'
 
+import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 import { cn } from '@/utilities/ui'
 import React from 'react'
 import RichText from '@/components/RichText'
 
 type Props = {
   className?: string
-} & BannerBlockProps
+} & BannerBlockProps &
+  RevealableBlockProps
 
-export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
+export const BannerBlock: React.FC<Props> = ({ className, content, style, revealStaggerIndex }) => {
   return (
+    <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
     <div className={cn('w-full', className)}>
       <div
         className={cn('flex items-center border-2 border-black px-6 py-3', {
@@ -22,5 +25,6 @@ export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
         <RichText data={content} enableGutter={false} enableProse={false} />
       </div>
     </div>
+    </BlockScrollReveal>
   )
 }

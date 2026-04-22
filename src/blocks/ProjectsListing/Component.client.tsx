@@ -5,7 +5,7 @@ import type { Project } from '@/payload-types'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
-import { useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 type Props = {
@@ -14,11 +14,31 @@ type Props = {
   disableInnerContainer?: boolean
 }
 
+function ProjectDetailMetaRow({
+  label,
+  children: value,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <tr>
+      <th
+        scope="row"
+        className="w-0 border border-black px-3 py-1 lg:py-2 text-left align-top font-semibold whitespace-nowrap text-black"
+      >
+        {label}
+      </th>
+      <td className="min-w-0 border border-black px-3 py-1 lg:py-2 align-top text-black">
+        {value}
+      </td>
+    </tr>
+  )
+}
+
 export function ProjectsListingClient(props: Props) {
   const { blockId, disableInnerContainer, projects } = props
-  const locale = useLocale()
-  const allLabel = locale === 'de' ? 'Alle' : 'All'
-  const closeLabel = locale === 'de' ? 'Schließen' : 'Close'
+  const t = useTranslations('ProjectsListing')
 
   const years = useMemo(() => {
     const set = new Set<number>()
@@ -35,6 +55,11 @@ export function ProjectsListingClient(props: Props) {
     if (yearFilter === 'all') return projects
     return projects.filter((p) => p.year === yearFilter)
   }, [projects, yearFilter])
+
+  const visibleProjects = useMemo(() => {
+    if (!expandedId) return filtered
+    return filtered.filter((p) => p.id === expandedId)
+  }, [expandedId, filtered])
 
   useEffect(() => {
     if (expandedId && !filtered.some((p) => p.id === expandedId)) {
@@ -64,7 +89,8 @@ export function ProjectsListingClient(props: Props) {
       className={cn('w-full', !disableInnerContainer && 'container')}
       id={blockId ? `block-${blockId}` : undefined}
     >
-      <div className="flex w-full flex-wrap gap-2 py-4">
+      {/* Year Filter */}
+      <div className="flex w-full flex-wrap gap-2 py-4 container">
         <button
           type="button"
           onClick={() => setYearFilter('all')}
@@ -73,7 +99,7 @@ export function ProjectsListingClient(props: Props) {
             yearFilter === 'all' ? 'bg-black text-white' : 'bg-white text-black',
           )}
         >
-          {allLabel}
+          {t('all')}
         </button>
         {years.map((year) => (
           <button
@@ -90,8 +116,14 @@ export function ProjectsListingClient(props: Props) {
         ))}
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-px border-t-2 border-black bg-black px-px pb-px sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((project) => {
+      {/* Projects Listing */}
+      <div
+        className={cn(
+          'grid w-full gap-px border-t-2 border-black bg-black px-px pb-px',
+          expandedId ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+        )}
+      >
+        {visibleProjects.map((project) => {
           const isExpanded = expandedId === project.id
           const title = project.title
           const image = project.image
@@ -99,7 +131,7 @@ export function ProjectsListingClient(props: Props) {
           const description = project.description
 
           return (
-            <div key={project.id} className={cn('min-w-0 bg-white', isExpanded && 'col-span-full')}>
+            <div key={project.id} className="min-w-0 bg-white">
               {!isExpanded ? (
                 <button
                   type="button"
@@ -124,18 +156,20 @@ export function ProjectsListingClient(props: Props) {
                           aria-hidden
                         />
                         {title ? (
+                          <div className="absolute inset-x-0 top-1/2 z-1 -translate-y-1/2 bg-white/75 px-4 py-3 text-center md:hidden">
+                            <span className="font-mono text-base font-bold text-black">
+                              {title}
+                            </span>
+                          </div>
+                        ) : null}
+                        {title ? (
                           <div className="absolute inset-0 z-1 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-200 [@media(hover:hover)]:group-hover:opacity-100 md:flex">
-                            <span className="text-center font-mono text-lg font-bold text-black md:text-xl">
+                            <span className="text-center font-mono text-lg font-bold text-black md:text-3xl">
                               {title}
                             </span>
                           </div>
                         ) : null}
                       </div>
-                      {title ? (
-                        <div className="border-t border-black bg-white p-3 md:hidden">
-                          <span className="font-mono text-base font-bold text-black">{title}</span>
-                        </div>
-                      ) : null}
                     </>
                   ) : null}
                 </button>
@@ -147,14 +181,14 @@ export function ProjectsListingClient(props: Props) {
                       onClick={collapse}
                       className="rounded-full border border-black bg-white px-3 py-1 text-sm font-medium text-black hover:bg-black hover:text-white hover:cursor-pointer  "
                     >
-                      {closeLabel}
+                      {t('close')}
                     </button>
                   </div>
                   <div className="grid w-full md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
                     {image && typeof image === 'object' ? (
                       <button
                         type="button"
-                        aria-label={closeLabel}
+                        aria-label={t('close')}
                         onClick={collapse}
                         className="relative aspect-4/3 min-h-48 w-full cursor-pointer border-b border-black text-left md:border-b-0 md:border-r"
                       >
@@ -168,17 +202,27 @@ export function ProjectsListingClient(props: Props) {
                         />
                       </button>
                     ) : null}
-                    <div className="flex flex-col gap-4 p-6 md:p-8">
+                    <div className="flex flex-col gap-8 p-6 md:p-8">
                       {title ? (
                         <h2 className="font-mono text-2xl font-bold text-black md:text-3xl">
                           {title}
                         </h2>
                       ) : null}
-                      {typeof project.year === 'number' ? (
-                        <p className="font-mono text-sm font-semibold text-black">{project.year}</p>
-                      ) : null}
-                      {participants ? (
-                        <p className="max-w-prose text-base text-black">{participants}</p>
+                      {typeof project.year === 'number' || participants ? (
+                        <table className="w-full max-w-prose border-collapse border border-black font-mono text-sm lg:text-base">
+                          <tbody>
+                            {typeof project.year === 'number' ? (
+                              <ProjectDetailMetaRow label={t('year')}>
+                                {project.year}
+                              </ProjectDetailMetaRow>
+                            ) : null}
+                            {participants ? (
+                              <ProjectDetailMetaRow label={t('participants')}>
+                                {participants}
+                              </ProjectDetailMetaRow>
+                            ) : null}
+                          </tbody>
+                        </table>
                       ) : null}
                       {description ? (
                         <RichText

@@ -208,6 +208,23 @@
   --color-error: var(--error);
 }
 
+@layer components {
+  /* Tighten gap between a paragraph and the list that follows (prose adds both p margin-bottom and ul margin-top). */
+  .payload-richtext p:has(+ ul),
+  .payload-richtext p:has(+ ol) {
+    margin-bottom: 0 !important;
+  }
+  .payload-richtext p + ul,
+  .payload-richtext p + ol {
+    margin-top: 0 !important;
+  }
+
+  /* Slightly more horizontal inset for bullets / numbers vs body text. */
+  .payload-richtext :is(ul, ol) {
+    padding-inline-start: 2em !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

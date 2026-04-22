@@ -6,7 +6,9 @@
   },
   "Posts": {
     "title": "Beiträge",
-    "metadataTitle": "Beiträge | Torhaus Berlin"
+    "metadataTitle": "Beiträge | Torhaus Berlin",
+    "metadataDescription": "Neuigkeiten und Beiträge von Torhaus Berlin e.V.",
+    "metadataPageTitle": "Seite {page} — Beiträge | Torhaus Berlin"
   },
   "PageRange": {
     "noResults": "Die Suche lieferte keine Ergebnisse.",
@@ -27,5 +29,11 @@
   },
   "Card": {
     "noImage": "Kein Bild"
+  },
+  "ProjectsListing": {
+    "all": "Alle",
+    "close": "Schließen",
+    "year": "Jahr",
+    "participants": "Teilnehmende"
   }
 }

@@ -7,8 +7,10 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
-import { routing, toPayloadLocale } from '@/i18n/routing'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { routing, toPayloadLocale, type AppLocale } from '@/i18n/routing'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { alternatesForDefaultPath, defaultLocalePathForPostsList } from '@/utilities/seoPaths'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 600
@@ -72,8 +74,27 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const { pageNumber, locale } = await paramsPromise
   setRequestLocale(locale)
   const t = await getTranslations('Posts')
+  const n = Number(pageNumber)
+  const l = toPayloadLocale(locale) as AppLocale
+  const { canonical, languages } = alternatesForDefaultPath(
+    defaultLocalePathForPostsList(Number.isInteger(n) ? n : 1),
+    l,
+  )
+  const isPaginated = Number.isInteger(n) && n > 1
   return {
-    title: `${t('title')} — ${pageNumber || ''}`,
+    title: t('metadataPageTitle', { page: pageNumber }),
+    description: t('metadataDescription'),
+    ...(isPaginated
+      ? {
+          robots: { index: false, follow: true },
+        }
+      : {}),
+    alternates: { canonical, languages },
+    openGraph: mergeOpenGraph({
+      title: t('metadataPageTitle', { page: pageNumber }),
+      description: t('metadataDescription'),
+      url: canonical,
+    }),
   }
 }
 

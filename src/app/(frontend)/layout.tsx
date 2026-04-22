@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { fontNeueMachina, fontRobotoMono, fontRubik } from '@/fonts/app-fonts'
 import { cn } from '@/utilities/ui'
 import React from 'react'
+import { getLocale } from 'next-intl/server'
 
 import { Providers } from '@/providers'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -11,10 +12,16 @@ import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  let lang = 'en'
+  try {
+    lang = await getLocale()
+  } catch {
+    // Outside next-intl request (e.g. some tooling); keep default
+  }
   return (
     <html
       className={cn(fontRubik.variable, fontNeueMachina.variable, fontRobotoMono.variable)}
-      lang="en"
+      lang={lang}
       data-theme="light"
       suppressHydrationWarning
     >
@@ -34,12 +41,13 @@ export const metadata: Metadata = {
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
   },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#fffd38',
   viewportFit: 'cover',
+  colorScheme: 'light',
 }

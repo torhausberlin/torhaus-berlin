@@ -6,7 +6,9 @@
   },
   "Posts": {
     "title": "Posts",
-    "metadataTitle": "Posts | Torhaus Berlin"
+    "metadataTitle": "Posts | Torhaus Berlin",
+    "metadataDescription": "News and articles from Torhaus Berlin e.V.",
+    "metadataPageTitle": "Page {page} — Posts | Torhaus Berlin"
   },
   "PageRange": {
     "noResults": "Search produced no results.",
@@ -27,5 +29,11 @@
   },
   "Card": {
     "noImage": "No image"
+  },
+  "ProjectsListing": {
+    "all": "All",
+    "close": "Close",
+    "year": "Year",
+    "participants": "Participants"
   }
 }

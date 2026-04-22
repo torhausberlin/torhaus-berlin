@@ -6,6 +6,7 @@ import { getPayload } from 'payload'
 import { getLocale } from 'next-intl/server'
 import React from 'react'
 
+import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 import { ProjectsListingClient } from './Component.client'
 
 function projectIdsFromSelection(
@@ -25,9 +26,10 @@ export const ProjectsListingBlock: React.FC<
   ProjectsListingBlockProps & {
     disableInnerContainer?: boolean
     id?: string
-  }
+  } & RevealableBlockProps
 > = async (props) => {
-  const { disableInnerContainer, id, limit: limitFromProps, populateBy, selectedDocs } = props
+  const { disableInnerContainer, id, limit: limitFromProps, populateBy, selectedDocs, revealStaggerIndex } =
+    props
 
   const payload = await getPayload({ config: configPromise })
   const locale = toPayloadLocale(await getLocale())
@@ -71,10 +73,12 @@ export const ProjectsListingBlock: React.FC<
   if (projects.length === 0) return null
 
   return (
-    <ProjectsListingClient
-      blockId={id}
-      disableInnerContainer={disableInnerContainer}
-      projects={projects}
-    />
+    <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
+      <ProjectsListingClient
+        blockId={id}
+        disableInnerContainer={disableInnerContainer}
+        projects={projects}
+      />
+    </BlockScrollReveal>
   )
 }

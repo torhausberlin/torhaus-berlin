@@ -3,10 +3,11 @@ import { getServerSideURL } from './getURL'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'An open-source website built with Payload and Next.js.',
+  description:
+    'Torhaus Berlin e.V. is a non-profit organization based in the former Tempelhof Airport in Berlin.',
   images: [
     {
-      url: `${getServerSideURL()}/website-template-OG.webp`,
+      url: `${getServerSideURL()}/og-image.jpg`,
     },
   ],
   siteName: 'Torhaus Berlin e.V.',

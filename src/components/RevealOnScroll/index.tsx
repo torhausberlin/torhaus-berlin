@@ -42,7 +42,7 @@ export function RevealOnScroll({
   children,
   delay = 0,
   duration = 0.6,
-  direction = 'up',
+  direction = 'none',
   distance = 30,
   className = '',
   amount = 0.3,
@@ -105,5 +105,35 @@ export function RevealOnScroll({
     >
       {children}
     </motion.div>
+  )
+}
+
+export const REVEAL_STAGGER_S = 0.06
+
+export type RevealableBlockProps = {
+  /** When set (layout / RenderBlocks), wraps the block in a fade-on-scroll reveal. Omit for nested or Rich Text usage. */
+  revealStaggerIndex?: number
+}
+
+type BlockScrollRevealProps = {
+  children: ReactNode
+  revealStaggerIndex?: number
+  className?: string
+}
+
+export function BlockScrollReveal({ children, revealStaggerIndex, className = '' }: BlockScrollRevealProps) {
+  if (revealStaggerIndex === undefined) {
+    return <>{children}</>
+  }
+
+  return (
+    <RevealOnScroll
+      className={['w-full', className].filter(Boolean).join(' ')}
+      delay={revealStaggerIndex * REVEAL_STAGGER_S}
+      direction="none"
+      immediate={revealStaggerIndex === 0}
+    >
+      {children}
+    </RevealOnScroll>
   )
 }

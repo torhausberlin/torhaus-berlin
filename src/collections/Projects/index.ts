@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { richTextField } from '@/fields/richTextField'
+import { revalidateProject, revalidateProjectDelete } from './hooks/revalidateProject'
 
 export const Projects: CollectionConfig<'projects'> = {
   slug: 'projects',
@@ -65,5 +66,9 @@ export const Projects: CollectionConfig<'projects'> = {
       },
     },
     maxPerDoc: 50,
+  },
+  hooks: {
+    afterChange: [revalidateProject],
+    afterDelete: [revalidateProjectDelete],
   },
 }

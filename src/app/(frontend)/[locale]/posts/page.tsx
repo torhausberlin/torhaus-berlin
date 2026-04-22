@@ -8,7 +8,9 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import { toPayloadLocale } from '@/i18n/routing'
+import { toPayloadLocale, type AppLocale } from '@/i18n/routing'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { alternatesForDefaultPath, defaultLocalePathForPostsList } from '@/utilities/seoPaths'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -70,7 +72,16 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const { locale } = await paramsPromise
   setRequestLocale(locale)
   const t = await getTranslations('Posts')
+  const l = toPayloadLocale(locale) as AppLocale
+  const { canonical, languages } = alternatesForDefaultPath(defaultLocalePathForPostsList(1), l)
   return {
     title: t('metadataTitle'),
+    description: t('metadataDescription'),
+    alternates: { canonical, languages },
+    openGraph: mergeOpenGraph({
+      title: t('metadataTitle'),
+      description: t('metadataDescription'),
+      url: canonical,
+    }),
   }
 }

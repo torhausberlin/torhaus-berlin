@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
       { pathname: '/logo.png' },
       { pathname: '/icons/**' },
     ],
-    qualities: [100],
+    qualities: [75, 100],
     remotePatterns: [...imageRemotePatterns],
   },
   webpack: (webpackConfig) => {

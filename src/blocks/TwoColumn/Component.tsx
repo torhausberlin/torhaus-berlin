@@ -5,12 +5,13 @@ import type { TwoColumnBlock as TwoColumnBlockProps } from '@/payload-types'
 import { SectionHeadingBlock } from '@/blocks/SectionHeading/Component'
 import { cn } from '@/utilities/ui'
 
+import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 import { TwoColumnCell } from './ColumnContent'
 
 type Props = TwoColumnBlockProps & {
   disableInnerContainer?: boolean
   id?: string
-}
+} & RevealableBlockProps
 
 function columnHasImageOrSlideshow(
   column: TwoColumnBlockProps['leftColumn'] | TwoColumnBlockProps['rightColumn'],
@@ -22,6 +23,7 @@ function columnHasImageOrSlideshow(
 export const TwoColumnBlock: React.FC<Props> = ({
   id,
   leftColumn,
+  revealStaggerIndex,
   rightColumn,
   sectionHeading,
 }) => {
@@ -32,13 +34,17 @@ export const TwoColumnBlock: React.FC<Props> = ({
   const leftHasMedia = columnHasImageOrSlideshow(leftColumn)
   const rightHasMedia = columnHasImageOrSlideshow(rightColumn)
 
-  const textCellWhenMedia =
-    'bg-white px-6 py-12 md:py-16 lg:justify-center lg:px-14 lg:py-24 xl:px-20 xl:py-28'
+  /** Match Text block: `container` horizontal padding + `sectionPy` vertical (see globals.css). */
+  const textCellPadding =
+    'bg-white px-4 md:px-8 sectionPy lg:justify-center lg:px-14 lg:py-24 xl:px-20 xl:py-28'
+
+  const textCellWhenMedia = textCellPadding
 
   const leftCellClassName = cn(
     'flex min-h-0 flex-col border-black lg:h-full lg:min-h-0',
     !hasImageOrSlideshow && 'md:min-h-[45vh] lg:min-h-0',
     'border-b-2 lg:border-b-0 lg:border-r-2',
+    !hasImageOrSlideshow && textCellPadding,
     hasImageOrSlideshow && (leftHasMedia ? undefined : textCellWhenMedia),
   )
 
@@ -48,35 +54,37 @@ export const TwoColumnBlock: React.FC<Props> = ({
       ? rightHasMedia
         ? undefined
         : textCellWhenMedia
-      : 'bg-white px-6 py-10 md:px-12 md:py-14',
+      : textCellPadding,
   )
 
   return (
-    <div className="w-full" id={id ? `block-${id}` : undefined}>
-      {headingText ? (
-        <SectionHeadingBlock
-          blockType="sectionHeading"
-          heading={headingText}
-          level={sectionHeading?.level ?? 'h2'}
-        />
-      ) : null}
+    <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
+      <div className="w-full" id={id ? `block-${id}` : undefined}>
+        {headingText ? (
+          <SectionHeadingBlock
+            blockType="sectionHeading"
+            heading={headingText}
+            level={sectionHeading?.level ?? 'h2'}
+          />
+        ) : null}
 
-      <div
-        className={cn(
-          'grid w-full grid-cols-1 border-black lg:grid-cols-2 lg:items-stretch',
-          hasImageOrSlideshow
-            ? 'min-h-0 lg:min-h-[80vh] lg:grid-rows-[minmax(80vh,auto)]'
-            : 'md:min-h-[50vh] lg:min-h-[60vh]',
-          headingText ? 'border-t-2 border-black' : '',
-        )}
-      >
-        <div className={leftCellClassName}>
-          <TwoColumnCell column={leftColumn} />
-        </div>
-        <div className={rightCellClassName}>
-          <TwoColumnCell column={rightColumn} />
+        <div
+          className={cn(
+            'grid w-full grid-cols-1 border-black lg:grid-cols-2 lg:items-stretch',
+            hasImageOrSlideshow
+              ? 'min-h-0 lg:min-h-[80vh] lg:grid-rows-[minmax(80vh,auto)]'
+              : 'md:min-h-[50vh] lg:min-h-[60vh]',
+            headingText ? 'border-t-2 border-black' : '',
+          )}
+        >
+          <div className={leftCellClassName}>
+            <TwoColumnCell column={leftColumn} />
+          </div>
+          <div className={rightCellClassName}>
+            <TwoColumnCell column={rightColumn} />
+          </div>
         </div>
       </div>
-    </div>
+    </BlockScrollReveal>
   )
 }
