@@ -2,6 +2,7 @@
 
 import type { Project } from '@/payload-types'
 
+import { SlideshowBlock } from '@/blocks/Slideshow/Component'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
@@ -25,13 +26,11 @@ function ProjectDetailMetaRow({
     <tr>
       <th
         scope="row"
-        className="w-0 border border-black px-3 py-1 lg:py-2 text-left align-top font-semibold whitespace-nowrap text-black"
+        className="w-0 py-0.5 pr-2 text-left align-top font-semibold leading-tight whitespace-nowrap text-black"
       >
         {label}
       </th>
-      <td className="min-w-0 border border-black px-3 py-1 lg:py-2 align-top text-black">
-        {value}
-      </td>
+      <td className="min-w-0 py-0.5 pl-3 text-left align-top leading-tight text-black">{value}</td>
     </tr>
   )
 }
@@ -114,12 +113,12 @@ export function ProjectsListingClient(props: Props) {
       id={blockId ? `block-${blockId}` : undefined}
     >
       {/* Year Filter */}
-      <div className="flex w-full flex-wrap gap-2 lg:gap-4 py-4 container">
+      <div className="container flex w-full flex-wrap gap-1 py-3 lg:gap-2">
         <button
           type="button"
           onClick={() => setYearFilter('all')}
           className={cn(
-            'rounded-full border border-black px-3 py-1 text-sm font-medium transition-colors hover:cursor-pointer',
+            'rounded-full border-2 border-black px-3 py-1 text-sm font-semibold transition-colors hover:cursor-pointer',
             yearFilter === 'all' ? 'bg-black text-white' : 'bg-white text-black',
           )}
         >
@@ -131,7 +130,7 @@ export function ProjectsListingClient(props: Props) {
             type="button"
             onClick={() => setYearFilter(year)}
             className={cn(
-              'rounded-full border border-black px-3 py-1 text-sm font-medium transition-colors hover:cursor-pointer',
+              'rounded-full border-2 border-black px-3 py-1 text-sm font-semibold transition-colors hover:cursor-pointer',
               yearFilter === year ? 'bg-black text-white' : 'bg-white text-black',
             )}
           >
@@ -143,14 +142,22 @@ export function ProjectsListingClient(props: Props) {
       {/* Projects Listing */}
       <div
         className={cn(
-          'grid w-full gap-px border-t-2 border-black bg-black px-px pb-px',
-          expandedId ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+          'grid w-full border-t-[3px] border-black',
+          expandedId
+            ? 'grid-cols-1'
+            : 'grid-cols-1 gap-px bg-black px-px pb-px sm:grid-cols-2 lg:grid-cols-3',
         )}
       >
         {visibleProjects.map((project) => {
           const isExpanded = expandedId === project.id
           const title = project.title
-          const image = project.image
+          const firstSlide = project.gallery?.[0]
+          const firstImage =
+            firstSlide && typeof firstSlide.image === 'object' ? firstSlide.image : null
+          const hasGallery = Boolean(
+            project.gallery?.length &&
+            project.gallery.some((row) => row.image && typeof row.image === 'object'),
+          )
           const participants = project.participants
           const description = project.description
 
@@ -164,7 +171,7 @@ export function ProjectsListingClient(props: Props) {
                   onClick={() => toggleExpanded(project.id)}
                   className="group relative flex w-full cursor-pointer flex-col text-left outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 md:aspect-3/4"
                 >
-                  {image && typeof image === 'object' ? (
+                  {firstImage ? (
                     <>
                       <div className="relative aspect-3/4 w-full shrink-0 overflow-hidden md:absolute md:inset-0 md:h-full">
                         <Media
@@ -172,7 +179,7 @@ export function ProjectsListingClient(props: Props) {
                           fill
                           htmlElement="div"
                           imgClassName="object-cover"
-                          resource={image}
+                          resource={firstImage}
                           size="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                         <div
@@ -199,33 +206,23 @@ export function ProjectsListingClient(props: Props) {
                 <div className="flex w-full flex-col">
                   <div
                     ref={expandedCloseBarRef}
-                    className="flex justify-end border-b border-black px-3 py-2 max-lg:scroll-mt-[calc(0.75rem+2.75rem+0.75rem+1px)] md:max-lg:scroll-mt-[calc(1rem+5rem+1rem+1px)]"
+                    className="flex justify-end border-b-[3px] border-black px-3 py-3 max-lg:scroll-mt-[calc(0.75rem+2.75rem+0.75rem+3px)] md:max-lg:scroll-mt-[calc(1rem+5rem+1rem+3px)]"
                   >
                     <button
                       type="button"
                       onClick={collapse}
-                      className="rounded-full border border-black bg-white px-3 py-1 text-sm font-medium text-black hover:bg-black hover:text-white hover:cursor-pointer  "
+                      className="rounded-full border-2 border-black bg-white px-3 py-1 text-sm font-semibold text-black transition-colors hover:bg-black hover:text-white hover:cursor-pointer"
                     >
                       {t('close')}
                     </button>
                   </div>
-                  <div className="grid w-full md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-                    {image && typeof image === 'object' ? (
-                      <button
-                        type="button"
-                        aria-label={t('close')}
-                        onClick={collapse}
-                        className="relative aspect-4/3 min-h-48 w-full cursor-pointer border-b border-black text-left md:border-b-0 md:border-r"
-                      >
-                        <Media
-                          className="absolute inset-0 block h-full w-full"
-                          fill
-                          htmlElement="div"
-                          imgClassName="object-cover"
-                          resource={image}
-                          size="100vw"
-                        />
-                      </button>
+                  <div className="grid w-full min-h-0 md:min-h-[60vh] md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:items-stretch md:grid-rows-[minmax(60vh,auto)]">
+                    {hasGallery && project.gallery ? (
+                      <div className="flex w-full min-h-48 flex-col border-b-[3px] border-black md:min-h-0 md:border-b-0 md:border-r-[3px]">
+                        <div className="flex min-h-0 flex-1 flex-col">
+                          <SlideshowBlock blockType="slideshow" gallery={project.gallery} unboxed />
+                        </div>
+                      </div>
                     ) : null}
                     <div className="flex flex-col gap-8 p-6 md:p-8">
                       {title ? (
@@ -234,7 +231,7 @@ export function ProjectsListingClient(props: Props) {
                         </h2>
                       ) : null}
                       {typeof project.year === 'number' || participants ? (
-                        <table className="w-full max-w-prose border-collapse border border-black font-mono text-sm lg:text-base">
+                        <table className="w-full max-w-prose border-separate border-spacing-0 font-mono text-sm lg:text-lg">
                           <tbody>
                             {typeof project.year === 'number' ? (
                               <ProjectDetailMetaRow label={t('year')}>

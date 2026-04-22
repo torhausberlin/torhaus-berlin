@@ -861,7 +861,15 @@ export interface ProjectsListingBlock {
 export interface Project {
   id: string;
   title: string;
-  image: string | Media;
+  /**
+   * Multiple images: the listing shows the first; the detail view is a slideshow of all images.
+   */
+  gallery?:
+    | {
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
   description?: {
     root: {
       type: string;
@@ -1476,7 +1484,12 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
-  image?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   description?: T;
   year?: T;
   participants?: T;

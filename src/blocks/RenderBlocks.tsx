@@ -1,7 +1,6 @@
 import React from 'react'
 
 import type { Page } from '@/payload-types'
-import { cn } from '@/utilities/ui'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
@@ -34,6 +33,7 @@ const blockComponents = {
 /** Layout-only props passed from RenderBlocks; not in CMS payload types. */
 type BlockWithLayoutProps = Page['layout'][0] & {
   disableInnerContainer?: boolean
+  isFirstLayoutBlock: boolean
   revealStaggerIndex: number
 }
 
@@ -47,7 +47,7 @@ export const RenderBlocks: React.FC<{
   if (hasBlocks) {
     let layoutBlockIndex = 0
     return (
-      <div className="w-full">
+      <div className="w-full divide-y-[3px] divide-black">
         {blocks.map((block, index) => {
           const { blockType } = block
 
@@ -59,13 +59,11 @@ export const RenderBlocks: React.FC<{
               const isFirstLayoutBlock = layoutBlockIndex === 0
               layoutBlockIndex += 1
               return (
-                <div
-                  key={index}
-                  className={cn('w-full', !isFirstLayoutBlock && 'border-t-2 border-black')}
-                >
+                <div key={index} className="w-full">
                   <BlockComponent
                     {...block}
                     disableInnerContainer
+                    isFirstLayoutBlock={isFirstLayoutBlock}
                     revealStaggerIndex={index}
                   />
                 </div>

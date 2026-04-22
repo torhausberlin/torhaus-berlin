@@ -113,6 +113,11 @@ export const REVEAL_STAGGER_S = 0.06
 export type RevealableBlockProps = {
   /** When set (layout / RenderBlocks), wraps the block in a fade-on-scroll reveal. Omit for nested or Rich Text usage. */
   revealStaggerIndex?: number
+  /**
+   * Set by `RenderBlocks` for top-level page layout blocks. When false, the block sits below another block:
+   * bordered “card” UIs should omit their top border so the shared layout divider is not doubled.
+   */
+  isFirstLayoutBlock?: boolean
 }
 
 type BlockScrollRevealProps = {

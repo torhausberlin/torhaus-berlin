@@ -19,7 +19,7 @@ export const Projects: CollectionConfig<'projects'> = {
   },
   defaultPopulate: {
     title: true,
-    image: true,
+    gallery: true,
     year: true,
     participants: true,
   },
@@ -32,11 +32,29 @@ export const Projects: CollectionConfig<'projects'> = {
       label: { de: 'Titel', en: 'Title' },
     },
     {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      label: { de: 'Bild', en: 'Image' },
+      name: 'gallery',
+      type: 'array',
+      label: { de: 'Galerie', en: 'Gallery' },
+      labels: {
+        singular: { de: 'Bild', en: 'Image' },
+        plural: { de: 'Bilder', en: 'Images' },
+      },
+      minRows: 1,
+      admin: {
+        initCollapsed: true,
+        description: {
+          de: 'Mehrere Bilder: in der Übersicht wird das erste gezeigt; in der Detailansicht eine Slideshow.',
+          en: 'Multiple images: the listing shows the first; the detail view is a slideshow of all images.',
+        },
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+      ],
     },
     richTextField('description', true, 'Beschreibung', 'Description'),
     {

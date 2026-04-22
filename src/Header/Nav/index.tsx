@@ -76,7 +76,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   const linkClass = (active: boolean) =>
     cn(
-      'font-sans text-sm font-medium tracking-tight text-black transition-opacity hover:opacity-70 md:text-lg',
+      'font-sans text-sm font-medium tracking-tight text-black transition-opacity hover:opacity-70 md:text-xl',
       active ? 'underline underline-offset-4' : 'underline-transparent',
     )
 
@@ -206,7 +206,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       </nav>
 
       <div className="flex items-center justify-center gap-4">
-        <LocaleSwitcher className="shrink-0 gap-3 text-base font-medium text-black md:pl-2" />
+        <LocaleSwitcher className="shrink-0 gap-3 text-lg font-medium text-black md:pl-2" />
         {externalImageLinks.length > 0 ? (
           <div className="flex items-center gap-5 border-black/15 pl-2 md:pl-6">
             {externalImageLinks.map((row, i) => (

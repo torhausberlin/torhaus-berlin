@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 
-import { fontNeueMachina, fontRobotoMono, fontRubik } from '@/fonts/app-fonts'
+import { fontNeueMachina, fontRoboto, fontRobotoMono } from '@/fonts/app-fonts'
 import { cn } from '@/utilities/ui'
 import React from 'react'
 import { getLocale } from 'next-intl/server'
@@ -20,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
   return (
     <html
-      className={cn(fontRubik.variable, fontNeueMachina.variable, fontRobotoMono.variable)}
+      className={cn(fontRoboto.variable, fontNeueMachina.variable, fontRobotoMono.variable)}
       lang={lang}
       data-theme="light"
       suppressHydrationWarning

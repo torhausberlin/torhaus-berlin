@@ -20,7 +20,7 @@ export const FooterClient: React.FC<Props> = ({ data }) => {
   const navItems = data?.navItems || []
 
   return (
-    <footer className="mt-auto border-t-2 border-black bg-torhaus-yellow text-black">
+    <footer className="mt-auto border-t-[3px] border-black bg-torhaus-yellow text-black">
       <div className="container flex max-w-full flex-col gap-5 py-4 md:flex-row md:items-center md:justify-between md:gap-12">
         <Link
           className="relative size-12 shrink-0 items-center md:size-20 hidden md:block"

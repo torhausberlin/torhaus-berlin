@@ -49,7 +49,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <div className="relative shrink-0 bg-torhaus-yellow">
-        <div className="pointer-events-auto border-b border-black">
+        <div className="pointer-events-auto border-b-[3px] border-black">
           <div className="container flex items-center gap-4 py-3 md:gap-16 md:py-4">
             <Link
               className="relative size-11 shrink-0 rounded-sm outline-offset-4 focus-visible:outline-2 focus-visible:outline-black md:size-20"
@@ -98,7 +98,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         {/* Mobile menu */}
         <div
           className={cn(
-            'absolute left-0 right-0 top-full z-40 border-b border-black bg-torhaus-yellow shadow-md transition-[max-height] duration-300 ease-in-out lg:hidden',
+            'absolute left-0 right-0 top-full z-40 border-black bg-torhaus-yellow shadow-md transition-[max-height] duration-300 ease-in-out lg:hidden',
+            isMobileMenuOpen && 'border-b-[3px]',
             isMobileMenuOpen
               ? 'pointer-events-auto max-h-[min(calc(100svh-0.75rem-2.75rem-0.75rem-1px),48rem)] md:max-h-[min(calc(100svh-1rem-5rem-1rem-1px),48rem)] overflow-y-auto'
               : 'pointer-events-none max-h-0 overflow-hidden',

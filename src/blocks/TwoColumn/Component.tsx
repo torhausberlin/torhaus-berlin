@@ -54,8 +54,8 @@ export const TwoColumnBlock: React.FC<Props> = ({
     'flex min-h-0 flex-col border-black lg:h-full lg:min-h-0',
     !hasImageOrSlideshow && 'md:min-h-[45vh] lg:min-h-0',
     // Stacked border sits under the *visually* first row (order may swap below lg).
-    mobileStackSlideshowLast ? 'max-lg:border-b-0' : 'border-b-2',
-    'lg:border-b-0 lg:border-r-2',
+    mobileStackSlideshowLast ? 'max-lg:border-b-0' : 'border-b-[3px]',
+    'lg:border-b-0 lg:border-r-[3px]',
     mobileStackSlideshowLast && 'max-lg:order-2',
     !hasImageOrSlideshow && textCellPadding,
     hasImageOrSlideshow && (leftHasMedia ? undefined : textCellWhenMedia),
@@ -68,14 +68,14 @@ export const TwoColumnBlock: React.FC<Props> = ({
         ? undefined
         : textCellWhenMedia
       : textCellPadding,
-    mobileStackSlideshowLast && 'max-lg:order-1 max-lg:border-b-2',
+    mobileStackSlideshowLast && 'max-lg:order-1 max-lg:border-b-[3px]',
   )
 
   return (
     <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
       <div className="w-full" id={id ? `block-${id}` : undefined}>
         {headingText ? (
-          <div className="w-full border-b-2 border-black">
+          <div className="w-full border-b-[3px] border-black">
             <div className="container py-6 text-center tracking-widest lg:py-12">
               <SectionHeadingBlock
                 unboxed

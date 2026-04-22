@@ -87,7 +87,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
       {caption && (
         <div
           className={cn(
-            'border-t-2 border-black bg-white px-6 py-6 md:px-10 md:py-8',
+            'border-t-[3px] border-black bg-white px-6 py-6 md:px-10 md:py-8',
             useContainer && !disableInnerContainer && 'container',
             captionClassName,
           )}

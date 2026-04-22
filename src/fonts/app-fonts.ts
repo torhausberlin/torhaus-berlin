@@ -1,18 +1,18 @@
 import localFont from 'next/font/local'
 
-/** Body / UI — Rubik (variable) */
-export const fontRubik = localFont({
+/** Body / UI — Roboto (variable, wdth + wght) */
+export const fontRoboto = localFont({
   src: [
     {
-      path: '../../public/fonts/Rubik-VariableFont_wght.ttf',
+      path: '../../public/fonts/Roboto-VariableFont_wdth,wght.ttf',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/Rubik-Italic-VariableFont_wght.ttf',
+      path: '../../public/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf',
       style: 'italic',
     },
   ],
-  variable: '--font-rubik',
+  variable: '--font-roboto',
   display: 'swap',
 })
 
@@ -20,17 +20,17 @@ export const fontRubik = localFont({
 export const fontNeueMachina = localFont({
   src: [
     {
-      path: '../../public/fonts/NeueMachina-Light.ttf',
+      path: '../../public/fonts/NeueMachina-Light.otf',
       weight: '300',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/NeueMachina-Regular.ttf',
+      path: '../../public/fonts/NeueMachina-Regular.otf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../public/fonts/NeueMachina-Ultrabold.ttf',
+      path: '../../public/fonts/NeueMachina-Ultrabold.otf',
       weight: '800',
       style: 'normal',
     },

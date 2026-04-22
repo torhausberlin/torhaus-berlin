@@ -13,11 +13,17 @@ type Props = CodeBlockProps & {
   className?: string
 } & RevealableBlockProps
 
-export const CodeBlock: React.FC<Props> = ({ className, code, language, revealStaggerIndex }) => {
+export const CodeBlock: React.FC<Props> = ({
+  className,
+  code,
+  isFirstLayoutBlock = true,
+  language,
+  revealStaggerIndex,
+}) => {
   return (
     <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
       <div className={[className, 'not-prose'].filter(Boolean).join(' ')}>
-        <Code code={code} language={language} />
+        <Code code={code} isFirstLayoutBlock={isFirstLayoutBlock} language={language} />
       </div>
     </BlockScrollReveal>
   )

@@ -10,6 +10,7 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { cn } from '@/utilities/ui'
 import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
 
 export type FormBlockType = {
@@ -28,6 +29,7 @@ export const FormBlock: React.FC<
 > = (props) => {
   const {
     enableIntro,
+    isFirstLayoutBlock = true,
     form: formFromProps,
     form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
     introContent,
@@ -122,7 +124,12 @@ export const FormBlock: React.FC<
       {enableIntro && introContent && !hasSubmitted && (
         <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
       )}
-      <div className="border-2 border-border p-4 lg:p-6">
+      <div
+        className={cn(
+          'border-[3px] border-border p-4 lg:p-6',
+          !isFirstLayoutBlock && 'border-t-0',
+        )}
+      >
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText data={confirmationMessage} />
