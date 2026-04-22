@@ -65,13 +65,13 @@ export const MediaBlock: React.FC<Props> = (props) => {
           className={cn(
             'relative w-full min-h-0 overflow-hidden bg-black',
             // fillHeight: row height comes from the grid on lg+; on mobile the stack has no
-            // intrinsic height, so flex-1 alone collapses to 0 — add a dvh floor until lg.
-            fillHeight && 'min-h-[38dvh] flex-1 md:min-h-[45dvh] lg:min-h-0',
-            useMinHeightFallback && 'min-h-[38dvh] md:min-h-[55vh]',
-            useViewportHeight && 'max-md:max-h-[52dvh]',
+            // intrinsic height, so flex-1 alone collapses to 0 — add a svh floor until lg.
+            fillHeight && 'min-h-[38svh] flex-1 md:min-h-[45svh] lg:min-h-0',
+            useMinHeightFallback && 'min-h-[38svh] md:min-h-[55vh]',
+            useViewportHeight && 'max-md:max-h-[52svh]',
           )}
           style={
-            useViewportHeight ? { height: `${viewportHeightPercent}dvh` } : undefined
+            useViewportHeight ? { height: `${viewportHeightPercent}svh` } : undefined
           }
         >
           <Media

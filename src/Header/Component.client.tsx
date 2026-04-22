@@ -100,7 +100,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           className={cn(
             'absolute left-0 right-0 top-full z-40 border-b border-black bg-torhaus-yellow shadow-md transition-[max-height] duration-300 ease-in-out lg:hidden',
             isMobileMenuOpen
-              ? 'pointer-events-auto max-h-[min(calc(100dvh-0.75rem-2.75rem-0.75rem-1px),48rem)] md:max-h-[min(calc(100dvh-1rem-5rem-1rem-1px),48rem)] overflow-y-auto'
+              ? 'pointer-events-auto max-h-[min(calc(100svh-0.75rem-2.75rem-0.75rem-1px),48rem)] md:max-h-[min(calc(100svh-1rem-5rem-1rem-1px),48rem)] overflow-y-auto'
               : 'pointer-events-none max-h-0 overflow-hidden',
           )}
         >
