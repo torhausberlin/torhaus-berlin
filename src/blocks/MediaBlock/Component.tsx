@@ -7,6 +7,7 @@ import RichText from '@/components/RichText'
 import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
 import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
+import { mediaBlockDisplayClassName } from '@/blocks/MediaBlock/displayClasses'
 import { Media } from '../../components/Media'
 
 type Props = MediaBlockProps & {
@@ -25,6 +26,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
   const {
     captionClassName,
     className,
+    display: displayFromProps,
     enableGutter = true,
     fillHeight,
     imgClassName,
@@ -34,6 +36,8 @@ export const MediaBlock: React.FC<Props> = (props) => {
     viewportHeightPercent: viewportHeightPercentFromDoc,
     revealStaggerIndex,
   } = props
+
+  const display = displayFromProps ?? 'all'
 
   const viewportHeightPercent =
     typeof viewportHeightPercentFromDoc === 'number' ? viewportHeightPercentFromDoc : 75
@@ -47,12 +51,22 @@ export const MediaBlock: React.FC<Props> = (props) => {
 
   return (
     <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
-    <div className={cn('flex w-full flex-col', fillHeight && 'min-h-0 flex-1', useContainer && 'container', className)}>
+    <div
+      className={cn(
+        'flex w-full flex-col',
+        fillHeight && 'min-h-0 flex-1',
+        useContainer && 'container',
+        mediaBlockDisplayClassName(display),
+        className,
+      )}
+    >
       {(media || staticImage) && (
         <div
           className={cn(
             'relative w-full min-h-0 overflow-hidden bg-black',
-            fillHeight && 'flex-1 lg:min-h-0',
+            // fillHeight: row height comes from the grid on lg+; on mobile the stack has no
+            // intrinsic height, so flex-1 alone collapses to 0 — add a dvh floor until lg.
+            fillHeight && 'min-h-[38dvh] flex-1 md:min-h-[45dvh] lg:min-h-0',
             useMinHeightFallback && 'min-h-[38dvh] md:min-h-[55vh]',
             useViewportHeight && 'max-md:max-h-[52dvh]',
           )}

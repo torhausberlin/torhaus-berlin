@@ -513,6 +513,7 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: string | Media;
+  display?: ('all' | 'mobile' | 'desktop') | null;
   /**
    * Use 0 for auto / fill-height (e.g. inside two-column layouts).
    */
@@ -945,6 +946,7 @@ export interface TwoColumnColumnSlideshow {
  */
 export interface TwoColumnColumnMedia {
   media: string | Media;
+  display?: ('all' | 'mobile' | 'desktop') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'columnMedia';
@@ -1282,6 +1284,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  display?: T;
   viewportHeightPercent?: T;
   id?: T;
   blockName?: T;
@@ -1432,6 +1435,7 @@ export interface TwoColumnColumnSlideshowSelect<T extends boolean = true> {
  */
 export interface TwoColumnColumnMediaSelect<T extends boolean = true> {
   media?: T;
+  display?: T;
   id?: T;
   blockName?: T;
 }

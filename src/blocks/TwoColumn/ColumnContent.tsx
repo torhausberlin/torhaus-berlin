@@ -46,6 +46,7 @@ export const TwoColumnCell: React.FC<{
     ) : isColumnMedia(block) ? (
       <MediaBlock
         blockType="mediaBlock"
+        display={block.display}
         disableInnerContainer
         enableGutter={false}
         fillHeight

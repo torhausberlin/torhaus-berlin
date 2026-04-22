@@ -90,7 +90,7 @@ export function ProjectsListingClient(props: Props) {
       id={blockId ? `block-${blockId}` : undefined}
     >
       {/* Year Filter */}
-      <div className="flex w-full flex-wrap gap-2 py-4 container">
+      <div className="flex w-full flex-wrap gap-2 lg:gap-4 py-4 container">
         <button
           type="button"
           onClick={() => setYearFilter('all')}
@@ -157,9 +157,7 @@ export function ProjectsListingClient(props: Props) {
                         />
                         {title ? (
                           <div className="absolute inset-x-0 top-1/2 z-1 -translate-y-1/2 bg-white/75 px-4 py-3 text-center md:hidden">
-                            <span className="font-mono text-base font-bold text-black">
-                              {title}
-                            </span>
+                            <span className="font-mono text-lg font-bold text-black">{title}</span>
                           </div>
                         ) : null}
                         {title ? (

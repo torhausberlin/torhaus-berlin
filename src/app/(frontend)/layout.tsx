@@ -6,7 +6,7 @@ import React from 'react'
 import { getLocale } from 'next-intl/server'
 
 import { Providers } from '@/providers'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { defaultSiteDescription, mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -28,6 +28,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* Next Metadata OpenGraph type has no `logo`; crawlers expect property="og:logo". */}
+        <meta content={`${getServerSideURL()}/logo.png`} property="og:logo" />
       </head>
       <body>
         <Providers>{children}</Providers>
@@ -38,6 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  description: defaultSiteDescription,
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',

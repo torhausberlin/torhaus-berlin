@@ -20,6 +20,12 @@ function columnHasImageOrSlideshow(
   return block?.blockType === 'columnSlideshow' || block?.blockType === 'columnMedia'
 }
 
+function columnHasSlideshow(
+  column: TwoColumnBlockProps['leftColumn'] | TwoColumnBlockProps['rightColumn'],
+) {
+  return column?.[0]?.blockType === 'columnSlideshow'
+}
+
 export const TwoColumnBlock: React.FC<Props> = ({
   id,
   leftColumn,
@@ -33,6 +39,10 @@ export const TwoColumnBlock: React.FC<Props> = ({
 
   const leftHasMedia = columnHasImageOrSlideshow(leftColumn)
   const rightHasMedia = columnHasImageOrSlideshow(rightColumn)
+  const leftHasSlideshow = columnHasSlideshow(leftColumn)
+  const rightHasSlideshow = columnHasSlideshow(rightColumn)
+  /** Mobile stack: show slideshow in the second (bottom) slot. DOM is left then right, so we only need to swap when the slideshow is in the left column. */
+  const mobileStackSlideshowLast = leftHasSlideshow && !rightHasSlideshow
 
   /** Match Text block: `container` horizontal padding + `sectionPy` vertical (see globals.css). */
   const textCellPadding =
@@ -43,7 +53,10 @@ export const TwoColumnBlock: React.FC<Props> = ({
   const leftCellClassName = cn(
     'flex min-h-0 flex-col border-black lg:h-full lg:min-h-0',
     !hasImageOrSlideshow && 'md:min-h-[45vh] lg:min-h-0',
-    'border-b-2 lg:border-b-0 lg:border-r-2',
+    // Stacked border sits under the *visually* first row (order may swap below lg).
+    mobileStackSlideshowLast ? 'max-lg:border-b-0' : 'border-b-2',
+    'lg:border-b-0 lg:border-r-2',
+    mobileStackSlideshowLast && 'max-lg:order-2',
     !hasImageOrSlideshow && textCellPadding,
     hasImageOrSlideshow && (leftHasMedia ? undefined : textCellWhenMedia),
   )
@@ -55,17 +68,23 @@ export const TwoColumnBlock: React.FC<Props> = ({
         ? undefined
         : textCellWhenMedia
       : textCellPadding,
+    mobileStackSlideshowLast && 'max-lg:order-1 max-lg:border-b-2',
   )
 
   return (
     <BlockScrollReveal revealStaggerIndex={revealStaggerIndex}>
       <div className="w-full" id={id ? `block-${id}` : undefined}>
         {headingText ? (
-          <SectionHeadingBlock
-            blockType="sectionHeading"
-            heading={headingText}
-            level={sectionHeading?.level ?? 'h2'}
-          />
+          <div className="w-full border-b-2 border-black">
+            <div className="container py-6 text-center tracking-widest lg:py-12">
+              <SectionHeadingBlock
+                unboxed
+                blockType="sectionHeading"
+                heading={headingText}
+                level={sectionHeading?.level ?? 'h2'}
+              />
+            </div>
+          </div>
         ) : null}
 
         <div
@@ -74,7 +93,6 @@ export const TwoColumnBlock: React.FC<Props> = ({
             hasImageOrSlideshow
               ? 'min-h-0 lg:min-h-[80vh] lg:grid-rows-[minmax(80vh,auto)]'
               : 'md:min-h-[50vh] lg:min-h-[60vh]',
-            headingText ? 'border-t-2 border-black' : '',
           )}
         >
           <div className={leftCellClassName}>

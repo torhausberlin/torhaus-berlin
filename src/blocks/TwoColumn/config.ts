@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 
+import { mediaBlockDisplayField } from '@/blocks/MediaBlock/displayField'
 import { richTextField } from '@/fields/richTextField'
 
 const galleryFields = [
@@ -56,6 +57,7 @@ const columnMedia: Block = {
       relationTo: 'media',
       required: true,
     },
+    mediaBlockDisplayField,
   ],
   labels: {
     plural: 'Media',

@@ -48,6 +48,8 @@ export const Posts: CollectionConfig<'posts'> = {
     },
   },
   admin: {
+    /** Hide from admin nav; collection + relationships and API still work. */
+    hidden: true,
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>

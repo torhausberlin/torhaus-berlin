@@ -53,7 +53,10 @@ export const SlideshowBlock: React.FC<Props> = ({
     <div
       className={cn(
         'relative w-full min-h-0 overflow-hidden bg-black',
-        unboxed ? 'flex-1' : 'aspect-video md:aspect-21/9',
+        // Unboxed (two column): 65dvh mobile, 90dvh desktop; flex fills parent from lg up.
+        unboxed
+          ? 'min-h-[65dvh] flex-1 lg:min-h-[90dvh]'
+          : 'aspect-video md:aspect-21/9 min-h-[65dvh] lg:min-h-[90dvh]',
       )}
     >
       <Media

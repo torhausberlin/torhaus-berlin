@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { mediaBlockDisplayField } from './displayField'
+
 export const MediaBlock: Block = {
   slug: 'mediaBlock',
   interfaceName: 'MediaBlock',
@@ -10,6 +12,7 @@ export const MediaBlock: Block = {
       relationTo: 'media',
       required: true,
     },
+    mediaBlockDisplayField,
     {
       name: 'viewportHeightPercent',
       type: 'number',

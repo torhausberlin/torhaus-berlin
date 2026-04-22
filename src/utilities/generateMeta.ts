@@ -71,9 +71,7 @@ export const generateMeta = async (args: {
 }): Promise<Metadata> => {
   const { doc, collection, locale } = args
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Torhaus Berlin e.V.'
-    : 'Torhaus Berlin e.V.'
+  const title = doc?.meta?.title ? doc?.meta?.title : 'Torhaus Berlin e.V.'
 
   if (!doc) {
     return {
@@ -103,7 +101,7 @@ export const generateMeta = async (args: {
       ...(alternates.languages ? { languages: alternates.languages } : {}),
     },
     openGraph: mergeOpenGraph({
-      description: doc?.meta?.description || '',
+      ...(doc?.meta?.description?.trim() ? { description: doc.meta.description } : {}),
       images: ogImage
         ? [
             {
