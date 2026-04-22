@@ -121,17 +121,23 @@ type BlockScrollRevealProps = {
   className?: string
 }
 
+const ABOVE_FOLD_BLOCK_COUNT = 2
+
 export function BlockScrollReveal({ children, revealStaggerIndex, className = '' }: BlockScrollRevealProps) {
   if (revealStaggerIndex === undefined) {
     return <>{children}</>
   }
+
+  const immediate = revealStaggerIndex < ABOVE_FOLD_BLOCK_COUNT
 
   return (
     <RevealOnScroll
       className={['w-full', className].filter(Boolean).join(' ')}
       delay={revealStaggerIndex * REVEAL_STAGGER_S}
       direction="none"
-      immediate={revealStaggerIndex === 0}
+      immediate={immediate}
+      amount={0.05}
+      viewportMargin="120px 0px 120px 0px"
     >
       {children}
     </RevealOnScroll>
