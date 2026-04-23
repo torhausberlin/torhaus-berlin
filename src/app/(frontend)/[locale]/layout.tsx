@@ -51,7 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       />
       <Header locale={locale} />
       {/* Match fixed header bar height (see HeaderClient: py-3 + size-11 + border; md: py-4 + size-20). */}
-      <div className="max-lg:pt-[calc(0.75rem+2.75rem+0.75rem+1px)] md:max-lg:pt-[calc(1rem+5rem+1rem+1px)]">
+      <div className="max-lg:pt-[calc(0.75rem+2.75rem+0.75rem+3px)] md:max-lg:pt-[calc(1rem+5rem+1rem+3px)]">
         {children}
       </div>
       <Footer locale={locale} />

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import type { Page } from '@/payload-types'
+import { cn } from '@/utilities/ui'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
@@ -48,8 +49,15 @@ export const RenderBlocks: React.FC<{
 
   if (hasBlocks) {
     let layoutBlockIndex = 0
+
+    const isVisibleOnMobile = (block: Page['layout'][0]) =>
+      block.blockType === 'mediaBlock' ? block.display !== 'desktop' : true
+
+    const isVisibleOnDesktop = (block: Page['layout'][0]) =>
+      block.blockType === 'mediaBlock' ? block.display !== 'mobile' : true
+
     return (
-      <div className="w-full divide-y-[3px] divide-black">
+      <div className="w-full">
         {blocks.map((block, index) => {
           const { blockType } = block
 
@@ -59,9 +67,33 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               const BlockComponent = Block as React.ComponentType<BlockWithLayoutProps>
               const isFirstLayoutBlock = layoutBlockIndex === 0
+              const hasVisibleAfterMobile = blocks
+                .slice(index + 1)
+                .some((nextBlock) => isVisibleOnMobile(nextBlock))
+              const hasVisibleAfterDesktop = blocks
+                .slice(index + 1)
+                .some((nextBlock) => isVisibleOnDesktop(nextBlock))
               layoutBlockIndex += 1
+
+              const mediaVisibilityClassName =
+                blockType === 'mediaBlock'
+                  ? block.display === 'desktop'
+                    ? 'max-lg:hidden'
+                    : block.display === 'mobile'
+                      ? 'lg:hidden'
+                      : undefined
+                  : undefined
+
               return (
-                <div key={index} className="w-full">
+                <div
+                  key={index}
+                  className={cn(
+                    'w-full',
+                    mediaVisibilityClassName,
+                    hasVisibleAfterMobile && 'max-lg:border-b-[3px] max-lg:border-b-black',
+                    hasVisibleAfterDesktop && 'lg:border-b-[3px] lg:border-b-black',
+                  )}
+                >
                   <BlockComponent
                     {...block}
                     disableInnerContainer

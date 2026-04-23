@@ -77,7 +77,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const linkClass = (active: boolean) =>
     cn(
       'font-sans text-sm font-medium tracking-tight text-black transition-opacity hover:opacity-70 md:text-xl',
-      active ? 'underline underline-offset-4' : 'underline-transparent',
+      active ? 'underline underline-offset-6' : 'underline-transparent',
     )
 
   const mobileOverlayLinkClass = (active: boolean) =>
