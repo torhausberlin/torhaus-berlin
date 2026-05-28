@@ -195,7 +195,9 @@ export const EventListingBlock: React.FC<
               disableInnerContainer && 'px-4 py-10 md:px-8 lg:py-14',
             )}
           >
-            <p className="m-0 text-base leading-relaxed text-black/80">{t('empty')}</p>
+            <div className="payload-richtext mb-0 max-w-none mx-auto prose md:prose-md dark:prose-invert prose-p:text-base prose-p:font-medium prose-p:leading-snug md:prose-p:text-xl text-center">
+              <p>{t('empty')}</p>
+            </div>
           </div>
         </div>
       </BlockScrollReveal>
