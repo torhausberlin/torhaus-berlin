@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { generateBlurDataURL } from '../hooks/generateBlurDataURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,7 +39,21 @@ export const Media: CollectionConfig = {
         },
       }),
     },
+    {
+      name: 'blurDataURL',
+      type: 'text',
+      label: { de: 'Unschärfe-Vorschau', en: 'Blur placeholder' },
+      admin: {
+        hidden: true,
+        disableListColumn: true,
+        disableListFilter: true,
+        readOnly: true,
+      },
+    },
   ],
+  hooks: {
+    beforeChange: [generateBlurDataURL],
+  },
   upload: {
     // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
     staticDir: path.resolve(dirname, '../../public/media'),

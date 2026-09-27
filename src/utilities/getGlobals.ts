@@ -1,4 +1,4 @@
-import type { Config } from 'src/payload-types'
+import type { Config } from '@/payload-types'
 
 import type { AppLocale } from '@/i18n/routing'
 import configPromise from '@payload-config'
