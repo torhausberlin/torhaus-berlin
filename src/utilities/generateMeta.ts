@@ -1,16 +1,22 @@
 import type { Metadata } from 'next'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getTranslations } from 'next-intl/server'
 
 import type { Media, Page, Post, Config } from '../payload-types'
-import { routing, type AppLocale } from '@/i18n/routing'
+import type { AppLocale } from '@/i18n/routing'
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
+import {
+  SITE_NAME,
+  openGraphAlternateLocales,
+  openGraphLocale,
+  titled,
+} from './jsonLd'
 import {
   defaultLocalePathForPage,
   defaultLocalePathForPost,
   pathnameWithLocale,
   toAbsoluteSeoUrl,
+  alternatesForDefaultPath,
 } from './seoPaths'
 
 const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
@@ -27,55 +33,19 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
   return url
 }
 
-type CollectionSlug = 'pages' | 'posts'
-
-async function buildAlternates(
-  collection: CollectionSlug,
-  id: string | number,
-  currentLocale: AppLocale,
-  basePath: string,
-): Promise<{ canonical: string; languages?: Record<string, string> }> {
-  const payload = await getPayload({ config: configPromise })
-  const languages: Record<string, string> = {}
-
-  for (const loc of routing.locales) {
-    try {
-      const localized = await payload.findByID({
-        collection,
-        id: String(id),
-        locale: loc,
-        select: { slug: true },
-      })
-      const slug = typeof localized?.slug === 'string' ? localized.slug : null
-      if (!slug) continue
-      const path =
-        collection === 'pages' ? defaultLocalePathForPage(slug) : defaultLocalePathForPost(slug)
-      languages[loc] = toAbsoluteSeoUrl(pathnameWithLocale(path, loc))
-    } catch {
-      // Missing locale version — omit from hreflang
-    }
-  }
-
-  const canonical = toAbsoluteSeoUrl(pathnameWithLocale(basePath, currentLocale))
-
-  return {
-    canonical,
-    languages: Object.keys(languages).length > 0 ? languages : undefined,
-  }
-}
-
 export const generateMeta = async (args: {
   doc: Partial<Page> | Partial<Post> | null
-  collection: CollectionSlug
+  collection: 'pages' | 'posts'
   locale: AppLocale
 }): Promise<Metadata> => {
   const { doc, collection, locale } = args
-
-  const title = doc?.meta?.title ? doc?.meta?.title : 'Torhaus Berlin e.V.'
+  const t = await getTranslations('Site')
+  const fallbackDescription = t('defaultDescription')
 
   if (!doc) {
     return {
-      title,
+      title: { absolute: SITE_NAME },
+      description: fallbackDescription,
     }
   }
 
@@ -87,21 +57,31 @@ export const generateMeta = async (args: {
         ? defaultLocalePathForPage(slug)
         : defaultLocalePathForPost(slug)
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  const metaTitle = doc.meta?.title?.trim()
+  const docTitle = typeof doc.title === 'string' ? doc.title.trim() : ''
+  const title: Metadata['title'] = metaTitle
+    ? { absolute: metaTitle }
+    : docTitle || { absolute: SITE_NAME }
+  const ogTitle = metaTitle || titled(docTitle)
+  const description = doc.meta?.description?.trim() || fallbackDescription
+
+  const ogImage = getImageURL(doc.meta?.image)
   const alternates =
-    doc.id != null
-      ? await buildAlternates(collection, doc.id, locale, basePath)
+    slug != null
+      ? alternatesForDefaultPath(basePath, locale)
       : { canonical: toAbsoluteSeoUrl(pathnameWithLocale(basePath, locale)) }
 
   return {
-    description: doc?.meta?.description,
+    description,
     title,
     alternates: {
       canonical: alternates.canonical,
-      ...(alternates.languages ? { languages: alternates.languages } : {}),
+      ...('languages' in alternates && alternates.languages
+        ? { languages: alternates.languages }
+        : {}),
     },
     openGraph: mergeOpenGraph({
-      ...(doc?.meta?.description?.trim() ? { description: doc.meta.description } : {}),
+      description,
       images: ogImage
         ? [
             {
@@ -109,8 +89,16 @@ export const generateMeta = async (args: {
             },
           ]
         : undefined,
-      title,
+      locale: openGraphLocale(locale),
+      alternateLocale: openGraphAlternateLocales(locale),
+      title: ogTitle,
       url: alternates.canonical,
     }),
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description,
+      images: ogImage ? [ogImage] : undefined,
+    },
   }
 }

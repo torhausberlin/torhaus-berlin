@@ -9,6 +9,7 @@ import React from 'react'
 import PageClient from './page.client'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { toPayloadLocale, type AppLocale } from '@/i18n/routing'
+import { titled, openGraphAlternateLocales, openGraphLocale } from '@/utilities/jsonLd'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { alternatesForDefaultPath, defaultLocalePathForPostsList } from '@/utilities/seoPaths'
 
@@ -74,13 +75,17 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const t = await getTranslations('Posts')
   const l = toPayloadLocale(locale) as AppLocale
   const { canonical, languages } = alternatesForDefaultPath(defaultLocalePathForPostsList(1), l)
+  const title = t('metadataTitle')
+  const description = t('metadataDescription')
   return {
-    title: t('metadataTitle'),
-    description: t('metadataDescription'),
+    title,
+    description,
     alternates: { canonical, languages },
     openGraph: mergeOpenGraph({
-      title: t('metadataTitle'),
-      description: t('metadataDescription'),
+      title: titled(title),
+      description,
+      locale: openGraphLocale(l),
+      alternateLocale: openGraphAlternateLocales(l),
       url: canonical,
     }),
   }

@@ -8,7 +8,6 @@
     "backfill:blur": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/backfillBlurDataURL.ts",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "build:local": "dotenv run -q -f .env.development -- pnpm build",
-    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh -p 4000",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

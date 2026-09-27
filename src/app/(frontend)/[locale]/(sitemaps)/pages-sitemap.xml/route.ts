@@ -3,62 +3,68 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { routing } from '@/i18n/routing'
+import {
+  defaultLocalePathForPage,
+  pathnameWithLocale,
+  toAbsoluteSeoUrl,
+} from '@/utilities/seoPaths'
+
+function locEntries(defaultPath: string, lastmod: string) {
+  return routing.locales.map((locale) => ({
+    loc: toAbsoluteSeoUrl(pathnameWithLocale(defaultPath, locale)),
+    lastmod,
+  }))
+}
 
 const getPagesSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
-    const SITE_URL =
-      process.env.NEXT_PUBLIC_SERVER_URL ||
-      process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-      'https://example.com'
 
-    const results = await payload.find({
-      collection: 'pages',
-      overrideAccess: false,
-      draft: false,
-      depth: 0,
-      limit: 1000,
-      pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
+    const [pages, latestPosts] = await Promise.all([
+      payload.find({
+        collection: 'pages',
+        overrideAccess: false,
+        draft: false,
+        depth: 0,
+        limit: 1000,
+        pagination: false,
+        where: {
+          _status: {
+            equals: 'published',
+          },
         },
-      },
-      select: {
-        slug: true,
-        updatedAt: true,
-      },
-    })
+        select: {
+          slug: true,
+          updatedAt: true,
+        },
+      }),
+      payload.find({
+        collection: 'posts',
+        overrideAccess: false,
+        draft: false,
+        depth: 0,
+        limit: 1,
+        pagination: false,
+        sort: '-updatedAt',
+        where: {
+          _status: {
+            equals: 'published',
+          },
+        },
+        select: {
+          updatedAt: true,
+        },
+      }),
+    ])
 
     const dateFallback = new Date().toISOString()
+    const postsListLastmod = latestPosts.docs[0]?.updatedAt || dateFallback
+    const defaultSitemap = locEntries('/posts', postsListLastmod)
 
-    const localized = (pathname: string) => {
-      const path = pathname.startsWith('/') ? pathname : `/${pathname}`
-      return routing.locales.flatMap((locale) => {
-        if (locale === routing.defaultLocale) {
-          return [{ loc: `${SITE_URL}${path === '/' ? '/' : path}`, lastmod: dateFallback }]
-        }
-        const prefix = path === '/' ? `/${locale}` : `/${locale}${path}`
-        return [{ loc: `${SITE_URL}${prefix}`, lastmod: dateFallback }]
-      })
-    }
-
-    const defaultSitemap = [...localized('/posts')]
-
-    const sitemap = results.docs
-      ? results.docs.flatMap((page) => {
+    const sitemap = pages.docs
+      ? pages.docs.flatMap((page) => {
           if (!page?.slug) return []
-          const path = page.slug === 'home' ? '/' : `/${page.slug}`
-          return routing.locales.map((locale) => {
-            const loc =
-              locale === routing.defaultLocale
-                ? `${SITE_URL}${path === '/' ? '/' : path}`
-                : `${SITE_URL}/${locale}${path === '/' ? '' : path}`
-            return {
-              loc,
-              lastmod: page.updatedAt || dateFallback,
-            }
-          })
+          return locEntries(defaultLocalePathForPage(page.slug), page.updatedAt || dateFallback)
         })
       : []
 

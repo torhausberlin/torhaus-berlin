@@ -26,6 +26,9 @@ export default buildConfig({
     locales: ['en', 'de'],
   },
   admin: {
+    meta: {
+      robots: { index: false, follow: false },
+    },
     components: {
       graphics: {
         Logo: '@/components/AdminBrandLogo#AdminNavLogo',

@@ -78,11 +78,10 @@ Hero/archive naming in older Payload templates may differ; this project uses the
 ## SEO
 
 - **Editorial** — Payload [SEO plugin](https://payloadcms.com/docs/plugins/seo) meta title, description, and share image on pages and posts.
-- **Next.js metadata** — Canonical URLs, Open Graph, Twitter card defaults, and **hreflang**-style `alternates.languages` for localized documents where translations exist.
+- **Next.js metadata** — Canonical URLs, Open Graph, Twitter card defaults, and **hreflang**-style `alternates.languages` (including `x-default`) for localized documents.
 - **Sitemaps** — `/sitemap.xml` is a **sitemap index**; full URL lists for pages and posts are generated from Payload in locale-scoped XML routes, with revalidation on publish.
-- **robots** — [`src/app/robots.ts`](src/app/robots.ts) serves `/robots.txt` and points crawlers at the sitemap index.
-- **JSON-LD** — Site-wide Organization/WebSite and Article data on post pages where implemented.
-- **postbuild** — `next-sitemap` (see `next-sitemap.config.cjs`) is configured so it does **not** override App Router `robots.txt` generation.
+- **robots** — [`src/app/robots.ts`](src/app/robots.ts) serves `/robots.txt` and points crawlers at the sitemap index. Payload admin is `noindex, nofollow` (HTML meta + `X-Robots-Tag`).
+- **JSON-LD** — Site-wide Organization/WebSite `@graph` and Article data on post pages.
 
 ## Revalidation and caching
 
@@ -97,8 +96,6 @@ Collection/global hooks revalidate relevant Next.js cache tags and paths when co
 1. `pnpm build` — produces the production Next.js build under `.next`.
 1. `pnpm start` — serves on port `4000` by default (see `package.json`).
 1. Set production `DATABASE_URL`, `NEXT_PUBLIC_SERVER_URL`, and other secrets in your host’s environment.
-
-`postbuild` runs `next-sitemap` (optional XML output; gitignored if written under `public/` — App Router still owns primary `robots`/`sitemap` behavior).
 
 ## Deployment notes
 

@@ -10,6 +10,7 @@ import PageClient from './page.client'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { routing, toPayloadLocale, type AppLocale } from '@/i18n/routing'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { titled, openGraphAlternateLocales, openGraphLocale } from '@/utilities/jsonLd'
 import { alternatesForDefaultPath, defaultLocalePathForPostsList } from '@/utilities/seoPaths'
 import { notFound } from 'next/navigation'
 
@@ -81,9 +82,11 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     l,
   )
   const isPaginated = Number.isInteger(n) && n > 1
+  const title = t('metadataPageTitle', { page: pageNumber })
+  const description = t('metadataDescription')
   return {
-    title: t('metadataPageTitle', { page: pageNumber }),
-    description: t('metadataDescription'),
+    title,
+    description,
     ...(isPaginated
       ? {
           robots: { index: false, follow: true },
@@ -91,8 +94,10 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
       : {}),
     alternates: { canonical, languages },
     openGraph: mergeOpenGraph({
-      title: t('metadataPageTitle', { page: pageNumber }),
-      description: t('metadataDescription'),
+      title: titled(title),
+      description,
+      locale: openGraphLocale(l),
+      alternateLocale: openGraphAlternateLocales(l),
       url: canonical,
     }),
   }

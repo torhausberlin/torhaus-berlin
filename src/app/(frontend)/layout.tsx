@@ -40,6 +40,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  title: {
+    default: 'Torhaus Berlin e.V.',
+    template: '%s | Torhaus Berlin e.V.',
+  },
   description: defaultSiteDescription,
   openGraph: mergeOpenGraph(),
   twitter: {

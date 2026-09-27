@@ -48,9 +48,49 @@ const imageRemotePatterns = Array.from(
   ).values(),
 )
 
+const securityHeaders: { key: string; value: string }[] = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+]
+
+if (process.env.NODE_ENV === 'production') {
+  securityHeaders.push({
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains; preload',
+  })
+}
+
+const robotsNoindexHeader = { key: 'X-Robots-Tag', value: 'noindex, nofollow' }
+
 const nextConfig: NextConfig = {
   // Keep node-ical + Temporal deps out of the RSC bundle (avoids BigInt/runtime errors when parsed).
   serverExternalPackages: ['node-ical', 'temporal-polyfill', 'rrule-temporal'],
+  async headers() {
+    return [
+      {
+        source: '/',
+        headers: securityHeaders,
+      },
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+      {
+        source: '/admin',
+        headers: [robotsNoindexHeader],
+      },
+      {
+        source: '/admin/:path*',
+        headers: [robotsNoindexHeader],
+      },
+      {
+        source: '/next/:path*',
+        headers: [robotsNoindexHeader],
+      },
+    ]
+  },
   // Temporarily required on Windows until Next.js fixes Turbopack Sass resolution.
   // See: https://github.com/vercel/next.js/issues/86431
   sassOptions: {

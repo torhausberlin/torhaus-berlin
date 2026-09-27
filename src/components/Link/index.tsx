@@ -1,10 +1,10 @@
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import { Link } from '@/i18n/navigation'
-import NextLink from 'next/link'
 import React from 'react'
 
 import type { Page, Post } from '@/payload-types'
+import { buildLinkRel, isNonAppHref } from '@/utilities/linkResolver'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -45,13 +45,9 @@ export function resolveCMSLinkHref({
   return trimmed || null
 }
 
+/** @deprecated Prefer `isNonAppHref` from `@/utilities/linkResolver`. */
 export function isExternalNavigationHref(href: string) {
-  return (
-    /^https?:\/\//.test(href) ||
-    /^mailto:/i.test(href) ||
-    /^tel:/i.test(href) ||
-    href.startsWith('//')
-  )
+  return isNonAppHref(href)
 }
 
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
@@ -72,33 +68,35 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   if (!href) return null
 
-  const targetHref = href
-  const NavLink = isExternalNavigationHref(targetHref) ? NextLink : Link
-
+  const rel = buildLinkRel({ url: href, newTab })
+  const relProps = rel ? { rel } : {}
+  const newTabProps = newTab ? { target: '_blank' as const } : {}
   const size = appearance === 'link' ? 'clear' : sizeFromProps
-  const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
-  /* Ensure we don't break any styles set by richText */
+  const content = (
+    <>
+      {label && label}
+      {children && children}
+    </>
+  )
+
+  const anchor = isNonAppHref(href) ? (
+    <a className={cn(className)} href={href} onClick={onClick} {...newTabProps} {...relProps}>
+      {content}
+    </a>
+  ) : (
+    <Link className={cn(className)} href={href} onClick={onClick} {...newTabProps} {...relProps}>
+      {content}
+    </Link>
+  )
+
   if (appearance === 'inline') {
-    return (
-      <NavLink
-        className={cn(className)}
-        href={targetHref}
-        onClick={onClick}
-        {...newTabProps}
-      >
-        {label && label}
-        {children && children}
-      </NavLink>
-    )
+    return anchor
   }
 
   return (
     <Button asChild className={className} size={size} variant={appearance}>
-      <NavLink className={cn(className)} href={targetHref} onClick={onClick} {...newTabProps}>
-        {label && label}
-        {children && children}
-      </NavLink>
+      {anchor}
     </Button>
   )
 }

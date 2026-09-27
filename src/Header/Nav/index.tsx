@@ -10,16 +10,8 @@ import { Media } from '@/components/Media'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { usePathname } from '@/i18n/navigation'
 import { isActiveNavPath } from '@/utilities/isActiveNavPath'
+import { buildLinkRel, isNonAppHref } from '@/utilities/linkResolver'
 import { cn } from '@/utilities/ui'
-
-function isValidExternalUrl(value: string) {
-  return (
-    /^https?:\/\//.test(value) ||
-    value.startsWith('//') ||
-    value.startsWith('mailto:') ||
-    value.startsWith('tel:')
-  )
-}
 
 type ExternalImageLinkRow = NonNullable<HeaderType['externalImageLinks']>[number]
 
@@ -36,10 +28,11 @@ function ExternalImageLink({
 }) {
   const { image, openInNewTab, url } = row
   if (!url || !image || typeof image !== 'object') return null
-  const rel = openInNewTab !== false ? 'noopener noreferrer' : undefined
-  const target = openInNewTab !== false ? '_blank' : undefined
+  const newTab = openInNewTab !== false
+  const rel = buildLinkRel({ url, newTab })
+  const target = newTab ? '_blank' : undefined
 
-  if (!isValidExternalUrl(url)) {
+  if (!isNonAppHref(url)) {
     return (
       <span className={frameClass} title={url}>
         <Media imgClassName={imageClass} resource={image} />

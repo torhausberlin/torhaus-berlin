@@ -4,11 +4,14 @@
     "en": "English",
     "de": "Deutsch"
   },
+  "Site": {
+    "defaultDescription": "Torhaus Berlin e.V. is a non-profit organization based in the former Tempelhof Airport in Berlin."
+  },
   "Posts": {
     "title": "Posts",
-    "metadataTitle": "Posts | Torhaus Berlin",
+    "metadataTitle": "Posts",
     "metadataDescription": "News and articles from Torhaus Berlin e.V.",
-    "metadataPageTitle": "Page {page} — Posts | Torhaus Berlin"
+    "metadataPageTitle": "Page {page} — Posts"
   },
   "PageRange": {
     "noResults": "Search produced no results.",

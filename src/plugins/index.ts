@@ -7,16 +7,28 @@ import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { Page, Post } from '@/payload-types'
-import { getServerSideURL } from '@/utilities/getURL'
+import { routing, type AppLocale } from '@/i18n/routing'
+import { SITE_NAME, titled } from '@/utilities/jsonLd'
+import {
+  defaultLocalePathForPage,
+  defaultLocalePathForPost,
+  pathnameWithLocale,
+  toAbsoluteSeoUrl,
+} from '@/utilities/seoPaths'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Torhaus Berlin e.V.` : 'Torhaus Berlin e.V.'
+  return typeof doc?.title === 'string' && doc.title.trim() ? titled(doc.title) : SITE_NAME
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
-  const url = getServerSideURL()
-
-  return doc?.slug ? `${url}/${doc.slug}` : url
+const generateURL: GenerateURL<Post | Page> = ({ doc, collectionSlug, locale }) => {
+  const slug = typeof doc?.slug === 'string' ? doc.slug : ''
+  const defaultPath =
+    collectionSlug === 'posts'
+      ? defaultLocalePathForPost(slug)
+      : defaultLocalePathForPage(slug || 'home')
+  const loc: AppLocale =
+    locale === 'de' || locale === 'en' ? locale : routing.defaultLocale
+  return toAbsoluteSeoUrl(pathnameWithLocale(defaultPath, loc))
 }
 
 export const plugins: Plugin[] = [

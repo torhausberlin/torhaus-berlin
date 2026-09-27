@@ -17,6 +17,7 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { routing, toPayloadLocale, type AppLocale } from '@/i18n/routing'
 import { setRequestLocale } from 'next-intl/server'
 import { getServerSideURL } from '@/utilities/getURL'
+import { articleJsonLd } from '@/utilities/jsonLd'
 import { pathnameWithLocale, toAbsoluteSeoUrl } from '@/utilities/seoPaths'
 
 export async function generateStaticParams() {
@@ -53,12 +54,13 @@ export default async function Post({ params: paramsPromise }: Args) {
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const url = '/posts/' + decodedSlug
-  const post = await queryPostBySlug({ slug: decodedSlug, locale: toPayloadLocale(locale) })
+  const localeCode = toPayloadLocale(locale)
+  const post = await queryPostBySlug({ slug: decodedSlug, locale: localeCode })
 
   if (!post) return <PayloadRedirects url={url} />
 
   const basePath = `/posts/${decodedSlug}`
-  const articleUrl = toAbsoluteSeoUrl(pathnameWithLocale(basePath, toPayloadLocale(locale)))
+  const articleUrl = toAbsoluteSeoUrl(pathnameWithLocale(basePath, localeCode))
   const published = post.publishedAt || post.createdAt
   const imageUrl =
     post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage && post.heroImage.url
@@ -68,20 +70,15 @@ export default async function Post({ params: paramsPromise }: Args) {
   return (
     <article className="pb-16 pt-0">
       <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'Article',
+        data={articleJsonLd({
           headline: post.title,
-          ...(imageUrl && { image: [imageUrl] }),
+          url: articleUrl,
+          locale: localeCode,
+          description: post.meta?.description,
+          imageUrl,
           datePublished: published,
           dateModified: post.updatedAt,
-          mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
-          publisher: {
-            '@type': 'Organization',
-            name: 'Torhaus Berlin e.V.',
-            url: toAbsoluteSeoUrl('/'),
-          },
-        }}
+        })}
       />
       <PageClient />
 

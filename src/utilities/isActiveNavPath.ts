@@ -1,4 +1,4 @@
-import { isExternalNavigationHref } from '@/components/Link'
+import { isNonAppHref } from '@/utilities/linkResolver'
 
 export function normalizeNavPath(p: string) {
   if (!p || p === '/') return '/'
@@ -7,7 +7,7 @@ export function normalizeNavPath(p: string) {
 
 /** Matches next-intl `usePathname()` to a CMS link href (locale-agnostic paths). */
 export function isActiveNavPath(pathname: string, href: string | null) {
-  if (!href || isExternalNavigationHref(href)) return false
+  if (!href || isNonAppHref(href)) return false
   const p = normalizeNavPath(pathname)
   const h = normalizeNavPath(href)
   if (h === '/') return p === '/'

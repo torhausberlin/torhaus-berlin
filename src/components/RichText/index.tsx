@@ -3,11 +3,11 @@ import {
   DefaultNodeTypes,
   SerializedBlockNode,
   SerializedLinkNode,
+  SerializedAutoLinkNode,
   type DefaultTypedEditorState,
 } from '@payloadcms/richtext-lexical'
 import {
   JSXConvertersFunction,
-  LinkJSXConverter,
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
 
@@ -20,7 +20,10 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { Link } from '@/i18n/navigation'
+import { buildLinkRel, isNonAppHref } from '@/utilities/linkResolver'
 import { cn } from '@/utilities/ui'
+import type { ReactNode } from 'react'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -31,13 +34,73 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   if (typeof value !== 'object') {
     throw new Error('Expected value to be an object')
   }
-  const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
+  const slug = typeof value.slug === 'string' ? value.slug : ''
+  if (relationTo === 'posts') return `/posts/${slug}`
+  if (slug === 'home') return '/'
+  return `/${slug}`
+}
+
+function withSectionHash(href: string, fields: SerializedLinkNode['fields']): string {
+  const sectionId = typeof fields.sectionId === 'string' ? fields.sectionId.replace(/^#/, '') : ''
+  if (!fields.isAnchorLink || !sectionId) return href
+  if (href.includes('#')) return href
+  if (href === '/' || href === '') return `#${sectionId}`
+  return `${href}#${sectionId}`
+}
+
+function RichTextAnchor({
+  href,
+  newTab,
+  children,
+}: {
+  href: string
+  newTab?: boolean | null
+  children: ReactNode
+}) {
+  const rel = buildLinkRel({ url: href, newTab })
+  const relProps = rel ? { rel } : {}
+  const newTabProps = newTab ? { target: '_blank' as const } : {}
+
+  if (href.startsWith('#') || isNonAppHref(href)) {
+    return (
+      <a href={href} {...newTabProps} {...relProps}>
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <Link href={href} {...newTabProps} {...relProps}>
+      {children}
+    </Link>
+  )
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
-  ...LinkJSXConverter({ internalDocToHref }),
+  autolink: ({ node, nodesToJSX }) => {
+    const children = nodesToJSX({ nodes: node.children })
+    const href = (node as SerializedAutoLinkNode).fields.url ?? ''
+    return (
+      <RichTextAnchor href={href} newTab={(node as SerializedAutoLinkNode).fields.newTab}>
+        {children}
+      </RichTextAnchor>
+    )
+  },
+  link: ({ node, nodesToJSX }) => {
+    const children = nodesToJSX({ nodes: node.children })
+    const fields = node.fields
+    let href = fields.url ?? ''
+    if (fields.linkType === 'internal') {
+      href = internalDocToHref({ linkNode: node })
+    }
+    href = withSectionHash(href, fields)
+    return (
+      <RichTextAnchor href={href} newTab={fields.newTab}>
+        {children}
+      </RichTextAnchor>
+    )
+  },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
     mediaBlock: ({ node }) => (

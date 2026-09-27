@@ -57,6 +57,9 @@ export function alternatesForDefaultPath(
   ) as Record<string, string>
   return {
     canonical: toAbsoluteSeoUrl(pathnameWithLocale(defaultPath, currentLocale)),
-    languages,
+    languages: {
+      ...languages,
+      'x-default': toAbsoluteSeoUrl(pathnameWithLocale(defaultPath, routing.defaultLocale)),
+    },
   }
 }

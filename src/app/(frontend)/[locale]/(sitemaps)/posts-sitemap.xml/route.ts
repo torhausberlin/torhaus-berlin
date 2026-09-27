@@ -3,14 +3,15 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { routing } from '@/i18n/routing'
+import {
+  defaultLocalePathForPost,
+  pathnameWithLocale,
+  toAbsoluteSeoUrl,
+} from '@/utilities/seoPaths'
 
 const getPostsSitemap = unstable_cache(
   async () => {
     const payload = await getPayload({ config })
-    const SITE_URL =
-      process.env.NEXT_PUBLIC_SERVER_URL ||
-      process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-      'https://example.com'
 
     const results = await payload.find({
       collection: 'posts',
@@ -36,10 +37,7 @@ const getPostsSitemap = unstable_cache(
       ? results.docs.flatMap((post) => {
           if (!post?.slug) return []
           return routing.locales.map((locale) => ({
-            loc:
-              locale === routing.defaultLocale
-                ? `${SITE_URL}/posts/${post.slug}`
-                : `${SITE_URL}/${locale}/posts/${post.slug}`,
+            loc: toAbsoluteSeoUrl(pathnameWithLocale(defaultLocalePathForPost(post.slug), locale)),
             lastmod: post.updatedAt || dateFallback,
           }))
         })

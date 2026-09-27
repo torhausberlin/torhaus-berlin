@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import { SITE_NAME } from './jsonLd'
 import { getServerSideURL } from './getURL'
 
-/** Default document + Open Graph description when a page has none in CMS. */
+/** English last-resort description; locale layouts override via `Site.defaultDescription`. */
 export const defaultSiteDescription =
   'Torhaus Berlin e.V. is a non-profit organization based in the former Tempelhof Airport in Berlin.'
 
@@ -13,8 +14,8 @@ const defaultOpenGraph: Metadata['openGraph'] = {
       url: `${getServerSideURL()}/og-image.jpg`,
     },
   ],
-  siteName: 'Torhaus Berlin e.V.',
-  title: 'Torhaus Berlin e.V.',
+  siteName: SITE_NAME,
+  title: SITE_NAME,
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {
