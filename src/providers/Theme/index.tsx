@@ -29,7 +29,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       // ignore private mode / access errors
     }
     document.documentElement.setAttribute('data-theme', 'light')
-    setThemeState('light')
   }, [])
 
   return <ThemeContext value={{ setTheme, theme }}>{children}</ThemeContext>

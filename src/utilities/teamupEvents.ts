@@ -5,6 +5,9 @@ import ical, { expandRecurringEvent, type ParameterValue, type VEvent } from 'no
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 
+/** Venue / calendar timezone — TeamUp stores wall times in Europe/Berlin (or Prague). */
+export const TEAMUP_DISPLAY_TZ = 'Europe/Berlin'
+
 export type TeamupListEvent = {
   id: string
   title: string
@@ -13,6 +16,17 @@ export type TeamupListEvent = {
   description: string
   location: string
   isFullDay: boolean
+  /**
+   * True when TeamUp marks a live radio studio reservation
+   * (`X-TEAMUP-RADIO-STUDIO-RESERVATION` / Live on air).
+   */
+  isRadio: boolean
+}
+
+function isLiveRadioReservation(value: unknown): boolean {
+  if (value == null) return false
+  const s = typeof value === 'string' ? value : String(value)
+  return /live on air/i.test(s) || s.includes('🔴')
 }
 
 function paramString(v: ParameterValue | undefined): string {
@@ -72,6 +86,10 @@ function mapInstances(vevents: VEvent[], from: Date, to: Date): TeamupListEvent[
 
       const title = paramString(inst.summary) || paramString(event.summary) || 'Event'
       const baseEvent = inst.event
+      // node-ical drops the `X-` prefix on custom props.
+      const radioReservation =
+        (baseEvent as Record<string, unknown>)['TEAMUP-RADIO-STUDIO-RESERVATION'] ??
+        (event as Record<string, unknown>)['TEAMUP-RADIO-STUDIO-RESERVATION']
       out.push({
         id: `${event.uid}:${start.getTime()}`,
         title,
@@ -80,6 +98,7 @@ function mapInstances(vevents: VEvent[], from: Date, to: Date): TeamupListEvent[
         description: describeString(baseEvent.description),
         location: paramString(baseEvent.location) || paramString(event.location),
         isFullDay: inst.isFullDay,
+        isRadio: isLiveRadioReservation(radioReservation),
       })
     }
   }

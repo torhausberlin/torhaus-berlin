@@ -2,10 +2,13 @@ import type { EventListingBlock as EventListingBlockProps } from '@/payload-type
 
 import { SectionHeadingBlock } from '@/blocks/SectionHeading/Component'
 import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
-import { getTeamupEventsCached, type TeamupListEvent } from '@/utilities/teamupEvents'
+import {
+  getTeamupEventsCached,
+  TEAMUP_DISPLAY_TZ,
+  type TeamupListEvent,
+} from '@/utilities/teamupEvents'
 import { cn } from '@/utilities/ui'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { ArrowRight } from 'lucide-react'
 
 const GRID_COLS = 3
 
@@ -17,8 +20,27 @@ type CardDateParts = {
   isAllDay: boolean
 }
 
+type BerlinDateParts = {
+  year: number
+  month: number
+  day: number
+}
+
 function toDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value)
+}
+
+/** Calendar date in Europe/Berlin — avoids UTC server drift on day/month. */
+function berlinDateParts(d: Date): BerlinDateParts {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TEAMUP_DISPLAY_TZ,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  }).formatToParts(d)
+  const n = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((p) => p.type === type)?.value ?? NaN)
+  return { year: n('year'), month: n('month'), day: n('day') }
 }
 
 function getCardDateParts(
@@ -33,20 +55,26 @@ function getCardDateParts(
     endD = new Date(endD.getTime() - 1)
   }
 
-  const month = new Intl.DateTimeFormat(locale, { month: 'short' }).format(startD).toUpperCase()
+  const tzOpts = { timeZone: TEAMUP_DISPLAY_TZ } as const
+  const month = new Intl.DateTimeFormat(locale, { ...tzOpts, month: 'short' })
+    .format(startD)
+    .toUpperCase()
+
+  const startParts = berlinDateParts(startD)
+  const endParts = berlinDateParts(endD)
 
   const sameDay =
-    startD.getFullYear() === endD.getFullYear() &&
-    startD.getMonth() === endD.getMonth() &&
-    startD.getDate() === endD.getDate()
+    startParts.year === endParts.year &&
+    startParts.month === endParts.month &&
+    startParts.day === endParts.day
 
   let dayLine: string
   if (sameDay) {
-    dayLine = String(startD.getDate())
-  } else if (startD.getFullYear() === endD.getFullYear() && startD.getMonth() === endD.getMonth()) {
-    dayLine = `${startD.getDate()} – ${endD.getDate()}`
+    dayLine = String(startParts.day)
+  } else if (startParts.year === endParts.year && startParts.month === endParts.month) {
+    dayLine = `${startParts.day} – ${endParts.day}`
   } else {
-    const df = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' })
+    const df = new Intl.DateTimeFormat(locale, { ...tzOpts, day: 'numeric', month: 'short' })
     dayLine = `${df.format(startD)} – ${df.format(endD)}`
   }
 
@@ -54,7 +82,7 @@ function getCardDateParts(
     return { month, dayLine, timeLine: '', isAllDay: true }
   }
   if (sameDay) {
-    const tf = new Intl.DateTimeFormat(locale, { timeStyle: 'short' })
+    const tf = new Intl.DateTimeFormat(locale, { ...tzOpts, timeStyle: 'short' })
     return {
       month,
       dayLine,
@@ -62,7 +90,11 @@ function getCardDateParts(
       isAllDay: false,
     }
   }
-  const df = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' })
+  const df = new Intl.DateTimeFormat(locale, {
+    ...tzOpts,
+    dateStyle: 'short',
+    timeStyle: 'short',
+  })
   return { month, dayLine, timeLine: `${df.format(startD)} – ${df.format(endD)}`, isAllDay: false }
 }
 
@@ -71,42 +103,52 @@ function EventGridCard({
   variant,
   dateParts,
   allDayLabel,
+  radioLabel,
 }: {
   ev: TeamupListEvent
   variant: 0 | 1
   dateParts: CardDateParts
   allDayLabel: string
+  radioLabel: string
 }) {
   const isDark = variant === 0
   const hasLocation = Boolean(ev.location?.trim())
   return (
     <article
       className={cn(
-        'group relative flex aspect-square min-h-0 w-full min-w-0 flex-col p-4 shadow-none transition-shadow duration-200   md:p-5',
+        'group relative flex aspect-square min-h-0 w-full min-w-0 flex-col p-4 shadow-none transition-shadow duration-200 md:p-5',
         isDark
           ? 'bg-torhaus-yellow text-black hover:shadow-md'
           : 'bg-zinc-100 text-zinc-900 hover:shadow-md',
       )}
     >
-      <div className="shrink-0 text-left">
-        <p
-          className={cn(
-            'font-sans text-base font-semibold uppercase tracking-[0.18em]  lg:text-base',
-          )}
-        >
-          {dateParts.month}
-        </p>
-        <p className="mt-1 font-heading text-4xl font-bold leading-none tracking-tight md:text-6xl">
-          {dateParts.dayLine}
-        </p>
+      <div className="flex shrink-0 items-start justify-between gap-2">
+        <div className="min-w-0 text-left">
+          <p className="font-sans text-base font-semibold uppercase tracking-[0.18em] lg:text-base">
+            {dateParts.month}
+          </p>
+          <p className="mt-1 font-heading text-4xl font-bold leading-none tracking-tight md:text-6xl">
+            {dateParts.dayLine}
+          </p>
+        </div>
+        {ev.isRadio ? (
+          <span
+            className={cn(
+              'shrink-0 border-2 border-black px-2 py-0.5 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] sm:text-xs',
+              isDark ? 'bg-black text-torhaus-yellow' : 'bg-black text-white',
+            )}
+          >
+            {radioLabel}
+          </span>
+        ) : null}
       </div>
       <div className="min-h-0 flex-1 py-2 sm:py-3">
-        <p className="line-clamp-4 text-xl font-medium leading-snug wrap-break-word  lg:text-3xl">
+        <p className="line-clamp-4 text-xl font-medium leading-snug wrap-break-word lg:text-3xl">
           {ev.title}
         </p>
       </div>
       <div className="mt-auto flex shrink-0 items-end justify-between gap-2 pt-1">
-        <div className="min-w-0 text-left text-lg leading-tight  lg:text-base">
+        <div className="min-w-0 text-left text-lg leading-tight lg:text-base">
           {dateParts.isAllDay ? (
             <p className="font-mono font-medium tabular-nums tracking-wide opacity-90">
               {allDayLabel}
@@ -119,20 +161,14 @@ function EventGridCard({
           {hasLocation ? (
             <p
               className={cn(
-                'mt-0.5 line-clamp-2 font-sans text-xs wrap-break-word ',
-                isDark ? 'text-white/90' : 'text-zinc-700',
+                'mt-0.5 line-clamp-2 font-sans text-xs wrap-break-word',
+                isDark ? 'text-black/70' : 'text-zinc-700',
               )}
             >
               {ev.location}
             </p>
           ) : null}
         </div>
-        {/* <div
-          className="shrink-0 opacity-80 transition-transform duration-200 group-hover:translate-x-0.5"
-          aria-hidden
-        >
-          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2} />
-        </div> */}
       </div>
     </article>
   )
@@ -234,6 +270,7 @@ export const EventListingBlock: React.FC<
                       variant={i % 2 === 0 ? 0 : 1}
                       dateParts={dateParts}
                       allDayLabel={t('allDay')}
+                      radioLabel={t('radio')}
                     />
                   </div>
                 )

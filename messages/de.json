@@ -41,6 +41,7 @@
   },
   "EventListing": {
     "empty": "Keine anstehenden Termine in diesem Zeitraum.",
-    "allDay": "Ganztägig"
+    "allDay": "Ganztägig",
+    "radio": "Radio"
   }
 }

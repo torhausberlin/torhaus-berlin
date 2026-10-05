@@ -3,8 +3,7 @@
 import type { Theme } from '@/providers/Theme/types'
 
 import React, { createContext, useCallback, use, useState } from 'react'
-
-import canUseDOM from '@/utilities/canUseDOM'
+import { usePathname } from 'next/navigation'
 
 export interface ContextType {
   headerTheme?: Theme | null
@@ -19,9 +18,16 @@ const initialContext: ContextType = {
 const HeaderThemeContext = createContext(initialContext)
 
 export const HeaderThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [headerTheme, setThemeState] = useState<Theme | undefined | null>(
-    canUseDOM ? (document.documentElement.getAttribute('data-theme') as Theme) : undefined,
-  )
+  const pathname = usePathname()
+  // Always start undefined so SSR and the first client render match (avoids hydration mismatch).
+  // Page clients set the theme after mount via setHeaderTheme.
+  const [headerTheme, setThemeState] = useState<Theme | undefined | null>(undefined)
+  const [themePathname, setThemePathname] = useState(pathname)
+
+  if (pathname !== themePathname) {
+    setThemePathname(pathname)
+    setThemeState(null)
+  }
 
   const setHeaderTheme = useCallback((themeToSet: Theme | null) => {
     setThemeState(themeToSet)

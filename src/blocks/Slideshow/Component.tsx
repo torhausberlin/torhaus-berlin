@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { BlockScrollReveal, type RevealableBlockProps } from '@/components/RevealOnScroll'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 type Props = SlideshowBlockProps & {
   disableInnerContainer?: boolean
@@ -32,6 +32,7 @@ export const SlideshowBlock: React.FC<Props> = ({
   const [index, setIndex] = useState(0)
 
   const count = slides.length
+  const safeIndex = count > 0 ? index % count : 0
 
   const go = useCallback(
     (dir: -1 | 1) => {
@@ -41,13 +42,9 @@ export const SlideshowBlock: React.FC<Props> = ({
     [count],
   )
 
-  useEffect(() => {
-    if (index >= count && count > 0) setIndex(0)
-  }, [count, index])
-
   if (count === 0) return null
 
-  const current = slides[index]
+  const current = slides[safeIndex]
 
   const inner = (
     <div
@@ -63,7 +60,7 @@ export const SlideshowBlock: React.FC<Props> = ({
         className="absolute inset-0 block h-full w-full"
         fill
         imgClassName="object-cover"
-        priority={index === 0}
+        priority={safeIndex === 0}
         resource={current}
         size="100vw"
       />
@@ -103,11 +100,11 @@ export const SlideshowBlock: React.FC<Props> = ({
           >
             {slides.map((_, i) => (
               <button
-                aria-current={i === index ? 'true' : undefined}
+                aria-current={i === safeIndex ? 'true' : undefined}
                 aria-label={`Go to slide ${i + 1}`}
                 className={cn(
                   'size-2 border border-white transition-colors',
-                  i === index ? 'bg-white' : 'bg-white/40 hover:bg-white/70',
+                  i === safeIndex ? 'bg-white' : 'bg-white/40 hover:bg-white/70',
                 )}
                 key={i}
                 onClick={() => setIndex(i)}

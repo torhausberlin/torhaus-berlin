@@ -48,13 +48,14 @@ export const RenderBlocks: React.FC<{
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
   if (hasBlocks) {
-    let layoutBlockIndex = 0
-
     const isVisibleOnMobile = (block: Page['layout'][0]) =>
       block.blockType === 'mediaBlock' ? block.display !== 'desktop' : true
 
     const isVisibleOnDesktop = (block: Page['layout'][0]) =>
       block.blockType === 'mediaBlock' ? block.display !== 'mobile' : true
+
+    const isRenderableBlock = (block: Page['layout'][0]) =>
+      Boolean(block.blockType && block.blockType in blockComponents && blockComponents[block.blockType])
 
     return (
       <div className="w-full">
@@ -66,6 +67,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               const BlockComponent = Block as React.ComponentType<BlockWithLayoutProps>
+              const layoutBlockIndex = blocks.slice(0, index).filter(isRenderableBlock).length
               const isFirstLayoutBlock = layoutBlockIndex === 0
               const hasVisibleAfterMobile = blocks
                 .slice(index + 1)
@@ -73,7 +75,6 @@ export const RenderBlocks: React.FC<{
               const hasVisibleAfterDesktop = blocks
                 .slice(index + 1)
                 .some((nextBlock) => isVisibleOnDesktop(nextBlock))
-              layoutBlockIndex += 1
 
               const mediaVisibilityClassName =
                 blockType === 'mediaBlock'

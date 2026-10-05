@@ -56,16 +56,13 @@ export function ProjectsListingClient(props: Props) {
     return projects.filter((p) => p.year === yearFilter)
   }, [projects, yearFilter])
 
-  const visibleProjects = useMemo(() => {
-    if (!expandedId) return filtered
-    return filtered.filter((p) => p.id === expandedId)
-  }, [expandedId, filtered])
+  const effectiveExpandedId =
+    expandedId !== null && filtered.some((p) => p.id === expandedId) ? expandedId : null
 
-  useEffect(() => {
-    if (expandedId && !filtered.some((p) => p.id === expandedId)) {
-      setExpandedId(null)
-    }
-  }, [expandedId, filtered])
+  const visibleProjects = useMemo(() => {
+    if (!effectiveExpandedId) return filtered
+    return filtered.filter((p) => p.id === effectiveExpandedId)
+  }, [effectiveExpandedId, filtered])
 
   const toggleExpanded = useCallback((projectId: string) => {
     setExpandedId((current) => (current === projectId ? null : projectId))
@@ -76,16 +73,16 @@ export function ProjectsListingClient(props: Props) {
   }, [])
 
   useEffect(() => {
-    if (!expandedId) return
+    if (!effectiveExpandedId) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') collapse()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [collapse, expandedId])
+  }, [collapse, effectiveExpandedId])
 
   useEffect(() => {
-    if (!expandedId) return
+    if (!effectiveExpandedId) return
     const isMobile = window.matchMedia('(max-width: 1023px)').matches
     if (!isMobile) return
 
@@ -105,7 +102,7 @@ export function ProjectsListingClient(props: Props) {
       cancelled = true
       cancelAnimationFrame(id)
     }
-  }, [expandedId])
+  }, [effectiveExpandedId])
 
   return (
     <section
@@ -143,13 +140,13 @@ export function ProjectsListingClient(props: Props) {
       <div
         className={cn(
           'grid w-full border-t-[3px] border-black',
-          expandedId
+          effectiveExpandedId
             ? 'grid-cols-1'
             : 'grid-cols-1 gap-px bg-black px-px pb-px sm:grid-cols-2 lg:grid-cols-3',
         )}
       >
         {visibleProjects.map((project) => {
-          const isExpanded = expandedId === project.id
+          const isExpanded = effectiveExpandedId === project.id
           const title = project.title
           const firstSlide = project.gallery?.[0]
           const firstImage =

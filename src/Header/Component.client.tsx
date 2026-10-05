@@ -16,21 +16,15 @@ interface HeaderClientProps {
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  const [theme, setTheme] = useState<string | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { headerTheme, setHeaderTheme } = useHeaderTheme()
+  const { headerTheme } = useHeaderTheme()
   const pathname = usePathname()
+  const [menuPathname, setMenuPathname] = useState(pathname)
 
-  useEffect(() => {
-    setHeaderTheme(null)
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname)
     setIsMobileMenuOpen(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
+  }
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : ''
@@ -46,7 +40,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         'max-lg:pointer-events-none max-lg:fixed max-lg:inset-0',
         'lg:relative lg:inset-auto lg:pointer-events-auto',
       )}
-      {...(theme ? { 'data-theme': theme } : {})}
+      {...(headerTheme ? { 'data-theme': headerTheme } : {})}
     >
       <div className="relative shrink-0 bg-torhaus-yellow">
         <div className="pointer-events-auto border-b-[3px] border-black">

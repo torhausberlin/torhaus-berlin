@@ -41,6 +41,7 @@
   },
   "EventListing": {
     "empty": "No upcoming events in this period.",
-    "allDay": "All day"
+    "allDay": "All day",
+    "radio": "Radio"
   }
 }
